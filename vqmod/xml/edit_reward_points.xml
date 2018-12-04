@@ -1,0 +1,39 @@
+<modification>
+
+	<id>Edit Rewards Points</id>
+	<version>300.1</version>
+	<vqmver>2.6.2</vqmver>
+
+    <file name="catalog\controller\extension\total\reward.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            $points_total += $product['points'];
+            ]]></search>
+            <add><![CDATA[
+            $points_total += $product['total'];
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="catalog\model\extension\total\reward.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            $points_total += $product['points'];
+            ]]></search>
+            <add><![CDATA[
+            $points_total += $product['total'];
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            $discount = $product['total'] * ($this->session->data['reward'] / $points_total);
+            ]]></search>
+            <add><![CDATA[
+            $discount = $this->session->data['reward'];
+            ]]></add>
+        </operation>
+    </file>
+
+
+</modification>

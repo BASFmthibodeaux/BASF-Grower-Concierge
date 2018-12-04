@@ -1,0 +1,90 @@
+<modification>
+
+	<id>Edit Checkout</id>
+	<version>300.1</version>
+	<vqmver>2.6.2</vqmver>
+
+    <file name="catalog/language/en-gb/checkout/checkout.php">
+		<operation>
+            <search position="replace"><![CDATA[
+            $_['text_checkout_shipping_address'] = 'Step %s: Delivery Details';
+            ]]></search>
+            <add><![CDATA[
+            $_['text_checkout_shipping_address'] = 'Step %s: Customer Details';
+            ]]></add>
+        </operation>
+    </file>>
+
+    <file name="catalog/controller/checkout/checkout.php">
+		<operation>
+            <search position="replace" offset="12"><![CDATA[
+            $data['text_checkout_option'] = sprintf($this->language->get('text_checkout_option'), 1);
+            ]]></search>
+            <add><![CDATA[
+            $data['text_checkout_shipping_address'] = sprintf($this->language->get('text_checkout_shipping_address'), 1);
+		    $data['text_checkout_shipping_method'] = sprintf($this->language->get('text_checkout_shipping_method'), 2);
+            $data['text_checkout_payment_method'] = sprintf($this->language->get('text_checkout_payment_method'), 3);
+			$data['text_checkout_confirm'] = sprintf($this->language->get('text_checkout_confirm'), 4);
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            $this->response->setOutput($this->load->view('checkout/checkout', $data));
+            ]]></search>
+            <add><![CDATA[
+            $this->response->setOutput($this->load->view('checkout/new_checkout', $data));
+            ]]></add>
+        </operation>
+    
+    </file>
+
+   <file name="catalog/controller/checkout/payment_method.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            if (isset($this->session->data['payment_address'])) {
+            ]]></search>
+            <add><![CDATA[
+            if (isset($this->session->data['shipping_address'])) {
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            $method = $this->{'model_extension_payment_' . $result['code']}->getMethod($this->session->data['payment_address'], $total);
+            ]]></search>
+            <add><![CDATA[
+            $method = $this->{'model_extension_payment_' . $result['code']}->getMethod($this->session->data['shipping_address'], $total);
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            if (!isset($this->session->data['payment_address'])) {
+            ]]></search>
+            <add><![CDATA[
+            if (!isset($this->session->data['shipping_address'])) {
+            ]]></add>
+        </operation>
+    </file>
+
+     <file name="catalog/controller/checkout/confirm.php">
+        <operation>
+            <search position="replace" offset="3"><![CDATA[
+            // Validate if payment address has been set.
+            ]]></search>
+            <add><![CDATA[
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace" offset="12"><![CDATA[
+            $order_data['payment_firstname'] = $this->session->data['payment_address']['firstname'];
+            ]]></search>
+            <add><![CDATA[
+            ]]></add>
+        </operation>
+    </file>
+
+
+</modification>

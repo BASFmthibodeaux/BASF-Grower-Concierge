@@ -1,0 +1,56 @@
+<modification>
+
+	<id>Edit Header</id>
+	<version>300.1</version>
+	<vqmver>2.6.2</vqmver>
+
+	<file name="catalog/view/theme/basf/template/common/header.twig">
+		<operation>
+            <search position="replace"><![CDATA[
+            <link href="catalog/view/theme/basf/stylesheet/stylesheet.css" rel="stylesheet">
+            ]]></search>
+            <add><![CDATA[
+            <link href="catalog/view/theme/basf/stylesheet/modified_stylesheet.css" rel="stylesheet">
+            ]]></add>
+        </operation>
+
+        <operation>
+			<search position="after"><![CDATA[
+			<body>
+			]]></search>
+			<add><![CDATA[
+            {% if logged %}
+            ]]></add>
+		</operation>
+
+        <operation>
+            <search position="replace" offset="17"><![CDATA[
+            <li><a href="{{ contact }}"><i class="fa fa-phone"></i></a> <span class="hidden-xs hidden-sm hidden-md">{{ telephone }}</span></li>
+            ]]></search>
+            <add><![CDATA[
+            <li><a href="{{ account }}" title="{{ text_account }}"><i class="fa fa-user"></i><span class="hidden-xs hidden-sm hidden-md">{{ text_account }}</span></a></li>
+            <li><a href="{{ shopping_cart }}" title="{{ text_shopping_cart }}"><i class="fa fa-shopping-cart"></i> <span class="hidden-xs hidden-sm hidden-md">{{ text_shopping_cart }}</span></a></li>
+            <li><a href="{{ logout }}" title="{{ text_logout }}"<i class = "fa fa-sign-out"></i><span class="hidden-xs hidden-sm hidden-md">{{ text_logout }}</span></a></li>
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="after"><![CDATA[
+            {{ menu }}
+            ]]></search>
+            <add><![CDATA[
+            {% endif %}           
+            {% if not logged %}
+            <div id="container">
+            <header id="header" class="navbar navbar-static-top">
+            <div class="container-fluid">
+                <br/>
+                <div id="header-logo" align="center"><img src="{{ logo }}" alt="BASF" height="120"/></a></div>
+                <br/>
+            </div>
+            {% endif %}
+            ]]></add>
+        </operation>
+    </file>
+    
+</modification>
