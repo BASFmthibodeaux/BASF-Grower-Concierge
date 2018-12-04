@@ -39,10 +39,10 @@ if ($site == 1) {
 }  else {
 
 		// HTTP
-	define('HTTP_SERVER', 'http://104.43.195.101/home/avash/basf_website/');
+	define('HTTP_SERVER', 'http://104.43.195.101/');
 
 	// HTTPS
-	define('HTTPS_SERVER', 'http://104.43.195.101/home/avash/basf_website/');
+	define('HTTPS_SERVER', 'http://104.43.195.101/');
 
 	// DIR
 	define('DIR_APPLICATION', '/home/avash/basf_website/catalog/');
