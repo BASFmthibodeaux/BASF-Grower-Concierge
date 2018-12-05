@@ -48,4 +48,27 @@
         </operation>
     </file>
 
+    <file name="admin\language\en-gb\catalog\product.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            $_['entry_reward']           = 'Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['entry_reward']           = 'BASF Dollars';
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="admin\language\en-gb\customer\customer.php">
+        <operation>
+            <search position="replace" offset="1"><![CDATA[
+            $_['text_reward']               = 'Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['text_reward']               = 'BASF Dollars';
+            $_['text_reward_add']           = 'Add BASF Dollars';
+            ]]></add>
+        </operation>
+    </file>
+
 </modification>
