@@ -4,6 +4,17 @@
 	<version>300.1</version>
 	<vqmver>2.6.2</vqmver>
 
+    <file name="catalog/model/catalog/product.php">
+		<operation>
+            <search position="replace"><![CDATA[
+            'reward'           => $query->row['reward'],
+            ]]></search>
+            <add><![CDATA[
+            'reward'           => ($query->row['reward'] ? $query->row['reward'] : 0),            
+            ]]></add>
+        </operation>
+    </file>>
+
     <file name="catalog\controller\extension\total\reward.php">
         <operation>
             <search position="replace"><![CDATA[
