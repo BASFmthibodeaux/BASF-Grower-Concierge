@@ -2,7 +2,7 @@
 
 // For localhost, $site = 1
 // For dev site, $site = 2
-$site = 1;
+$site = 2;
 
 if ($site == 1) {
 
