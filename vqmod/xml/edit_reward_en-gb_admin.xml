@@ -50,11 +50,30 @@
 
     <file name="admin\language\en-gb\catalog\product.php">
         <operation>
+            <search position="replace" offset="1"><![CDATA[
+            $_['entry_points']           = 'Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['entry_points']           = 'BASF Dollars';
+            ]]></add>
+        </operation>
+
+        <operation>
             <search position="replace"><![CDATA[
             $_['entry_reward']           = 'Reward Points';
             ]]></search>
             <add><![CDATA[
             $_['entry_reward']           = 'BASF Dollars';
+            ]]></add>
+        </operation>
+
+         <operation>
+            <search position="replace"><![CDATA[
+            $_['help_points']            = 'Number of points needed to buy this item. If you don\'t want this product to be purchased with points leave as 0.';
+            ]]></search>
+            <add><![CDATA[
+            $_['help_points']            = 'Number of BASF Dollars needed to buy this item. To change this value, change and save the price.';
+            $_['help_rewards']           = 'BASF Dollars to be added as rewards for purchasing this product.';
             ]]></add>
         </operation>
     </file>

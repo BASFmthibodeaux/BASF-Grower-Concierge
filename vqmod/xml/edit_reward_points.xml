@@ -46,5 +46,40 @@
         </operation>
     </file>
 
+    <file name="admin\controller\catalog\product.php">
+        <operation>
+            <search position="replace" offset="6"><![CDATA[
+            if (isset($this->request->post['points'])) {
+            ]]></search>
+            <add><![CDATA[
+            if (isset($this->request->post['price'])) {
+                $data['points'] = $this->request->post['price'];
+            } elseif (!empty($product_info)) {
+                $data['points'] = $product_info['price'];
+            } else {
+                $data['points'] = '';
+            }
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="admin\view\template\catalog\product_form.twig">
+        <operation>
+            <search position="ibefore"><![CDATA[
+            type="text" name="points" value="{{ points }}" placeholder="{{ entry_points }}" id="input-points" class="form-control" />
+            ]]></search>
+            <add><![CDATA[
+             readonly 
+            ]]></add>
+        </operation>
+        <operation>
+            <search position="replace"><![CDATA[
+            <td class="text-right">{{ entry_reward }}</td>
+            ]]></search>
+            <add><![CDATA[
+            <td class="text-right"><span data-toggle="tooltip" title="{{ help_rewards }}">{{ entry_reward }}</span></td>
+            ]]></add>
+        </operation>
+    </file>
 
 </modification>

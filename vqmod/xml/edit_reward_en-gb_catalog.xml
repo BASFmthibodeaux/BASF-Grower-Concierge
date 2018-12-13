@@ -15,10 +15,14 @@
         </operation>
 
         <operation>
-            <search position="replace" offset="2"><![CDATA[
-            $_['text_reward']        = 'Reward Points';
+            <search position="replace" offset="6"><![CDATA[
+            $_['column_points']      = 'Points';
             ]]></search>
             <add><![CDATA[
+            $_['column_points']      = 'BASF Dollars';
+
+            // Text
+            $_['text_account']       = 'Account';
             $_['text_reward']        = 'BASF Dollars';
             $_['text_total']         = 'Your total number of BASF Dollars is:';
             $_['text_empty']         = 'You do not have any BASF Dollars!';

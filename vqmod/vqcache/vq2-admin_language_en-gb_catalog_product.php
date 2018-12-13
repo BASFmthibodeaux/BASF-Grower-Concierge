@@ -50,8 +50,10 @@ $_['entry_minimum']          = 'Minimum Quantity';
 $_['entry_stock_status']     = 'Out Of Stock Status';
 $_['entry_price']            = 'Price';
 $_['entry_tax_class']        = 'Tax Class';
-$_['entry_points']           = 'Points';
-$_['entry_option_points']    = 'Points';
+
+            $_['entry_points']           = 'BASF Dollars';
+            
+
 $_['entry_subtract']         = 'Subtract Stock';
 $_['entry_weight_class']     = 'Weight Class';
 $_['entry_weight']           = 'Weight';
@@ -95,7 +97,10 @@ $_['help_mpn']               = 'Manufacturer Part Number';
 $_['help_manufacturer']      = '(Autocomplete)';
 $_['help_minimum']           = 'Force a minimum ordered amount';
 $_['help_stock_status']      = 'Status shown when a product is out of stock';
-$_['help_points']            = 'Number of points needed to buy this item. If you don\'t want this product to be purchased with points leave as 0.';
+
+            $_['help_points']            = 'Number of BASF Dollars needed to buy this item. To change this value, change and save the price.';
+            $_['help_rewards']           = 'BASF Dollars to be added as rewards for purchasing this product.';
+            
 $_['help_category']          = '(Autocomplete)';
 $_['help_filter']            = '(Autocomplete)';
 $_['help_download']          = '(Autocomplete)';

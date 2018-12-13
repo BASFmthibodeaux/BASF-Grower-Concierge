@@ -1052,7 +1052,9 @@
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-points"><span data-toggle="tooltip" title="{{ help_points }}">{{ entry_points }}</span></label>
                 <div class="col-sm-10">
-                  <input type="text" name="points" value="{{ points }}" placeholder="{{ entry_points }}" id="input-points" class="form-control" />
+                  <input 
+             readonly 
+            type="text" name="points" value="{{ points }}" placeholder="{{ entry_points }}" id="input-points" class="form-control" />
                 </div>
               </div>
               <div class="table-responsive">
@@ -1060,7 +1062,9 @@
                   <thead>
                     <tr>
                       <td class="text-left">{{ entry_customer_group }}</td>
-                      <td class="text-right">{{ entry_reward }}</td>
+                      
+            <td class="text-right"><span data-toggle="tooltip" title="{{ help_rewards }}">{{ entry_reward }}</span></td>
+            
                     </tr>
                   </thead>
                   <tbody>

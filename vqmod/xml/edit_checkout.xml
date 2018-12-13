@@ -86,5 +86,16 @@
         </operation>
     </file>
 
+    <file name="catalog\view\theme\basf\template\checkout\payment_method.twig">
+        <operation>
+            <search position="replace" offset="2"><![CDATA[
+            <p>{{ text_payment_method }}</p>
+            ]]></search>
+            <add><![CDATA[
+            <!-- {% for payment_method in payment_methods %}
+            <div class="radio" style="display:none"> -->
+            ]]></add>
+        </operation>
+    </file>
 
 </modification>

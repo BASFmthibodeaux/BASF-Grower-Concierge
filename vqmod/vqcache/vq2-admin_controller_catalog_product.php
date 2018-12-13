@@ -1226,13 +1226,21 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
-		if (isset($this->request->post['points'])) {
-			$data['points'] = $this->request->post['points'];
-		} elseif (!empty($product_info)) {
-			$data['points'] = $product_info['points'];
-		} else {
-			$data['points'] = '';
-		}
+		
+            if (isset($this->request->post['price'])) {
+                $data['points'] = $this->request->post['price'];
+            } elseif (!empty($product_info)) {
+                $data['points'] = $product_info['price'];
+            } else {
+                $data['points'] = '';
+            }
+            
+
+
+
+
+
+
 
 		if (isset($this->request->post['product_reward'])) {
 			$data['product_reward'] = $this->request->post['product_reward'];
