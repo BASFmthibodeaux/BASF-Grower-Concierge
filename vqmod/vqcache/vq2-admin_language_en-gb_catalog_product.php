@@ -116,6 +116,7 @@ $_['error_model']            = 'Product Model must be greater than 1 and less th
 $_['error_keyword']          = 'SEO URL already in use!';
 $_['error_unique']           = 'SEO URL must be unique!';
 
+            $_['error_vendor']           = "Must select a vendor!";
             $_['entry_vendor']           = 'Vendor';
             $_['help_vendor']            = 'Select Vendor Account';
             $_['column_vendor']          = 'Vendor';

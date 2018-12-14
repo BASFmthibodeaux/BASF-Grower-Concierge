@@ -144,7 +144,9 @@
               <div class="form-group">
                 <label class="col-sm-2 control-label" for="input-price">{{ entry_price }}</label>
                 <div class="col-sm-10">
-                  <input type="text" name="price" value="{{ price }}" placeholder="{{ entry_price }}" id="input-price" class="form-control" />
+                  <input 
+             id="price" 
+            type="text" name="price" value="{{ price }}" placeholder="{{ entry_price }}" id="input-price" class="form-control" />
                 </div>
               </div>
               <div class="form-group">
@@ -383,11 +385,11 @@
                 </div>
               </div>
 
-            <div class="form-group" {% if user_group_id == 10 %} style="display:none" {% endif %}>
+            <div class="form-group required" {% if user_group_id == 10 %} style="display:none" {% endif %}>
                 <label class="col-sm-2 control-label" for="input-vendor"><span data-toggle="tooltip" title="{{ help_vendor}}">{{ entry_vendor }}</span></label>
                 <div class="col-sm-10">
-                  <select name="vendor_id" id="input-vendor" class="form-control">
-                    <option value=""></option>
+                  <select required name="vendor_id" id="input-vendor" class="form-control">
+                    <option value="" disabled selected>-- Select A Vendor --</option>
                     {% for vendor_user in vendor_users %}   
                     {% if vendor_user.vendor_user_id == vendor_id %}
                       <option value="{{ vendor_user.vendor_user_id }}" selected="selected">{{ vendor_user.name }}</option>
@@ -396,6 +398,9 @@
                     {% endif %}
                     {% endfor %}
                   </select>
+                  {% if error_vendor %}
+                  <div class="text-danger">{{ error_vendor }}</div>
+                  {% endif %}
                 </div>
             </div>
 	        
@@ -1053,7 +1058,7 @@
                 <label class="col-sm-2 control-label" for="input-points"><span data-toggle="tooltip" title="{{ help_points }}">{{ entry_points }}</span></label>
                 <div class="col-sm-10">
                   <input 
-             readonly 
+             readonly id="basf"
             type="text" name="points" value="{{ points }}" placeholder="{{ entry_points }}" id="input-points" class="form-control" />
                 </div>
               </div>
@@ -1192,6 +1197,12 @@ $('input[name=\'manufacturer\']').autocomplete({
 	}
 });
 
+
+            $('#price').on('input', function(){
+                var valueOfID = $(this).val();
+                $('#basf').val(valueOfID);
+            });
+            
 // Category
 $('input[name=\'category\']').autocomplete({
 	'source': function(request, response) {

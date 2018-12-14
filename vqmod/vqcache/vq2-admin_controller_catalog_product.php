@@ -577,6 +577,13 @@ class ControllerCatalogProduct extends Controller {
 			$data['error_model'] = '';
 		}
 
+
+	        if (isset($this->error['vendor'])) {
+                $data['error_vendor'] = $this->error['vendor'];
+            } else {
+                $data['error_vendor'] = '';
+            }
+            
 		if (isset($this->error['keyword'])) {
 			$data['error_keyword'] = $this->error['keyword'];
 		} else {
@@ -1226,21 +1233,13 @@ class ControllerCatalogProduct extends Controller {
 			}
 		}
 
-		
-            if (isset($this->request->post['price'])) {
-                $data['points'] = $this->request->post['price'];
-            } elseif (!empty($product_info)) {
-                $data['points'] = $product_info['price'];
-            } else {
-                $data['points'] = '';
-            }
-            
-
-
-
-
-
-
+		if (isset($this->request->post['points'])) {
+			$data['points'] = $this->request->post['points'];
+		} elseif (!empty($product_info)) {
+			$data['points'] = $product_info['points'];
+		} else {
+			$data['points'] = '';
+		}
 
 		if (isset($this->request->post['product_reward'])) {
 			$data['product_reward'] = $this->request->post['product_reward'];
@@ -1296,6 +1295,11 @@ class ControllerCatalogProduct extends Controller {
 			$this->error['model'] = $this->language->get('error_model');
 		}
 
+
+	        if (!isset($this->request->post['vendor_id'])) {
+			    $this->error['vendor'] = $this->language->get('error_vendor');
+		    }
+            
 		if ($this->request->post['product_seo_url']) {
 			$this->load->model('design/seo_url');
 			

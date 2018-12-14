@@ -53,6 +53,7 @@
             $_['error_unique']           = 'SEO URL must be unique!';
 			]]></search>
 			<add><![CDATA[
+            $_['error_vendor']           = "Must select a vendor!";
             $_['entry_vendor']           = 'Vendor';
             $_['help_vendor']            = 'Select Vendor Account';
             $_['column_vendor']          = 'Vendor';
@@ -149,7 +150,31 @@
 
         <operation>
 			<search position="before"><![CDATA[
-			// Categories   
+			if (isset($this->error['keyword'])) {
+            ]]></search>
+			<add><![CDATA[
+	        if (isset($this->error['vendor'])) {
+                $data['error_vendor'] = $this->error['vendor'];
+            } else {
+                $data['error_vendor'] = '';
+            }
+            ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			if ($this->request->post['product_seo_url']) {
+            ]]></search>
+			<add><![CDATA[
+	        if (!isset($this->request->post['vendor_id'])) {
+			    $this->error['vendor'] = $this->language->get('error_vendor');
+		    }
+            ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			// Categories
             ]]></search>
 			<add><![CDATA[
 	        // Vendor
@@ -268,11 +293,11 @@
             <input type="hidden" name="manufacturer_id" value="{{ manufacturer_id }}" />
 			]]></search>
 			<add><![CDATA[
-            <div class="form-group" {% if user_group_id == 10 %} style="display:none" {% endif %}>
+            <div class="form-group required" {% if user_group_id == 10 %} style="display:none" {% endif %}>
                 <label class="col-sm-2 control-label" for="input-vendor"><span data-toggle="tooltip" title="{{ help_vendor}}">{{ entry_vendor }}</span></label>
                 <div class="col-sm-10">
-                  <select name="vendor_id" id="input-vendor" class="form-control">
-                    <option value=""></option>
+                  <select required name="vendor_id" id="input-vendor" class="form-control">
+                    <option value="" disabled selected>-- Select A Vendor --</option>
                     {% for vendor_user in vendor_users %}   
                     {% if vendor_user.vendor_user_id == vendor_id %}
                       <option value="{{ vendor_user.vendor_user_id }}" selected="selected">{{ vendor_user.name }}</option>
@@ -281,6 +306,9 @@
                     {% endif %}
                     {% endfor %}
                   </select>
+                  {% if error_vendor %}
+                  <div class="text-danger">{{ error_vendor }}</div>
+                  {% endif %}
                 </div>
             </div>
 	        ]]></add>
