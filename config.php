@@ -4,7 +4,7 @@
 // For dev site, $site = 2
 $site = 1;
 
-if ($site == 1) {
+if ($site == 2) {
 
 	// HTTP
 	define('HTTP_SERVER', 'http://localhost/basf_grower_concierge/');
