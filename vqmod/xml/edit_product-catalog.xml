@@ -1,10 +1,11 @@
 <modification>
 
-	<id>Edit Product</id>
+	<id>Edit Product - Catalog</id>
 	<version>300.1</version>
 	<vqmver>2.6.2</vqmver>
 
-	<file name="catalog\view\theme\basf\template\extension\module\featured.twig">
+	<!-- Remove wishlist buttons -->
+	<file name="catalog/view/theme/*/template/extension/module/featured.twig">
 		<operation>
 			<search position="replace"><![CDATA[
 			<button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
@@ -14,7 +15,7 @@
 		</operation>
     </file>
 
-	<file name="catalog/view/theme/basf/template/product/search.twig">
+	<file name="catalog/view/theme/*/template/product/search.twig">
 		<operation>
 			<search position="replace"><![CDATA[
 			<button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>
@@ -24,7 +25,7 @@
 		</operation>
     </file>
 
-	<file name="catalog/view/theme/basf/template/product/product.twig">
+	<file name="catalog/view/theme/*/template/product/product.twig">
 		<operation>
 			<search position="replace"><![CDATA[
 			<button type="button" data-toggle="tooltip" class="btn btn-default" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product_id }}');"><i class="fa fa-heart"></i></button>
@@ -34,7 +35,7 @@
 		</operation>
     </file>
 
-	<file name="catalog/view/theme/basf/template/product/category.twig">
+	<file name="catalog/view/theme/*/template/product/category.twig">
 		<operation>
 			<search position="replace"><![CDATA[
 			<button type="button" data-toggle="tooltip" title="{{ button_wishlist }}" onclick="wishlist.add('{{ product.product_id }}');"><i class="fa fa-heart"></i></button>

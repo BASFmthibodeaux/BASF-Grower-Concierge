@@ -13,32 +13,34 @@ class ModelExtensionTotalReward extends Model {
 
 				foreach ($this->cart->getProducts() as $product) {
 					if ($product['points']) {
-						$points_total += $product['points'];
+						// $points_total += $product['points'];
+						$points_total += $product['total'];
 					}
 				}
 
 				$points = min($points, $points_total);
 
-				foreach ($this->cart->getProducts() as $product) {
-					$discount = 0;
+				// foreach ($this->cart->getProducts() as $product) {
+				// 	$discount = 0;
 
-					if ($product['points']) {
-						$discount = $product['total'] * ($this->session->data['reward'] / $points_total);
+				// 	if ($product['points']) {
+				// 		$discount = $product['total'] * ($this->session->data['reward'] / $points_total);
 
-						if ($product['tax_class_id']) {
-							$tax_rates = $this->tax->getRates($product['total'] - ($product['total'] - $discount), $product['tax_class_id']);
+				// 		if ($product['tax_class_id']) {
+				// 			$tax_rates = $this->tax->getRates($product['total'] - ($product['total'] - $discount), $product['tax_class_id']);
 
-							foreach ($tax_rates as $tax_rate) {
-								if ($tax_rate['type'] == 'P') {
-									$total['taxes'][$tax_rate['tax_rate_id']] -= $tax_rate['amount'];
-								}
-							}
-						}
-					}
+				// 			foreach ($tax_rates as $tax_rate) {
+				// 				if ($tax_rate['type'] == 'P') {
+				// 					$total['taxes'][$tax_rate['tax_rate_id']] -= $tax_rate['amount'];
+				// 				}
+				// 			}
+				// 		}
+				// 	}
 
-					$discount_total += $discount;
-				}
-
+				// 	$discount_total += $discount;
+				// }
+				$discount_total = $this->session->data['reward'];
+				
 				$total['totals'][] = array(
 					'code'       => 'reward',
 					'title'      => sprintf($this->language->get('reward')->get('text_reward'), $this->session->data['reward']),

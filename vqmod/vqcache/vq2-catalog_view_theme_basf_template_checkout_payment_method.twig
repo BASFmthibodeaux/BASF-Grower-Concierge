@@ -3,17 +3,20 @@
 {% endif %}
 {% if payment_methods %}
 
-            <!-- {% for payment_method in payment_methods %}
-            <div class="radio" style="display:none"> -->
+            {% for payment_method in payment_methods %}
+            <div class="radio" style="display:none">
+                <label>
+                    {% set code = payment_method.code %}
+                    <input type="radio" name="payment_method" value="{{ payment_method.code }}" checked="checked" />
             
 
 
-  <label>{% if payment_method.code == code or not code %}
-    {% set code = payment_method.code %}
-    <input type="radio" name="payment_method" value="{{ payment_method.code }}" checked="checked" />
-    {% else %}
-    <input type="radio" name="payment_method" value="{{ payment_method.code }}" />
-    {% endif %}
+
+
+
+
+
+
     {{ payment_method.title }}
     {% if payment_method.terms %}
     ({{ payment_method.terms }})
@@ -21,10 +24,240 @@
 </div>
 {% endfor %}
 {% endif %}
-<p><strong>{{ text_comments }}</strong></p>
-<p>
-  <textarea name="comment" rows="8" class="form-control">{{ comment }}</textarea>
-</p>
+
+            <p><textarea name="comment" rows="8" class="form-control" style="display:none"></textarea></p>
+            
+
+
+
+
+            {% if module_apply_checkout_status %}
+                <div id="discount-message"></div>
+                
+                <div id="discounts-forms" style="margin-bottom: 15px; float: left;">
+                  {% if coupon_status %}
+                  <div id = "coupon-form">
+                    <label class="control-label" for="input-coupon"><strong>{{ use_coupon }}</strong></label>
+                    <div class="input-group">
+                      <input type="text" name="coupon" value="{{ coupon }}" placeholder="{{ entry_coupon }}" id="input-coupon" class="form-control" />
+                      <span class="input-group-btn">
+                      <input type="button" value="{{ button_coupon }}" id="button-coupon" data-loading-text="{{ text_loading }}"  class="btn btn-primary" />
+                      </span></div>
+                  </div>
+                  {% endif %}
+    
+                  {% if voucher_status %}
+                  <div id = "voucher-form">
+                    <label class="control-label" for="input-voucher"><strong>{{ use_voucher }}</strong></label>
+                    <div class="input-group">
+                      <input type="text" name="voucher" value="{{ voucher }}" placeholder="{{ entry_voucher }}" id="input-voucher" class="form-control" />
+                      <span class="input-group-btn">
+                      <input type="button" value="{{ button_voucher }}" id="button-voucher" data-loading-text="{{ text_loading }}"  class="btn btn-primary" />
+                      </span></div>
+                  </div>
+                  {% endif %}
+    
+                  {% if reward_status %}
+                  <div id = "reward-form">
+                    <label class="control-label" for="input-reward"><strong>{{ use_reward }}</strong></label>
+                    <div class="input-group">
+                      <input type="text" name="reward" value="{{ reward }}" placeholder="{{ entry_reward }}" id="input-reward" class="form-control" />
+                      <span class="input-group-btn">
+                      <input type="button" value="{{ button_reward }}" id="button-reward" data-loading-text="{{ text_loading }}"  class="btn btn-primary" />
+                      </span></div>
+                  </div>
+                  {% endif %}
+                
+                {% if coupon_status %}
+                <script type="text/javascript"><!--
+                $('#button-coupon').on('click', function() {
+                	$.ajax({
+                		url: 'index.php?route=extension/total/coupon/coupon',
+                		type: 'post',
+                		data: 'coupon=' + encodeURIComponent($('input[name=\'coupon\']').val()),
+                		dataType: 'json',
+                		beforeSend: function() {
+                			$('#button-coupon').button('loading');
+                		},
+                		complete: function() {
+                			$('#button-coupon').button('reset');
+                		},
+                		success: function(json) {
+                			$('.alert').remove();
+                
+                			if (json['error']) {
+                				$('#discount-message').after('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                			}
+                
+                			if (json['success']) {
+                			    $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                                $('#discount-message').after('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+                               	$.ajax({
+                                    type: 'get',
+                            		url: 'index.php?route=checkout/cart/refresh',
+                            		dataType: 'json',
+                                    beforeSend: function() {
+                                     	$('#cart > button').button('loading');
+                            		},  
+                            		complete: function() {
+                            				$('#cart > button').button('reset');
+                            		},
+                                    success: function(json) {
+                                        
+                        				setTimeout(function () {
+                        					$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+                        				}, 100);
+                     
+                                    }	
+                                });
+
+                			}
+                		}
+                	});
+                });
+                //--></script>
+                {% endif %}
+                
+                {% if voucher_status %}
+                <script type="text/javascript"><!--
+                $('#button-voucher').on('click', function() {
+                    $.ajax({
+                        url: 'index.php?route=extension/total/voucher/voucher',
+                        type: 'post',
+                        data: 'voucher=' + encodeURIComponent($('input[name=\'voucher\']').val()),
+                        dataType: 'json',
+                        beforeSend: function() {
+                          $('#button-voucher').button('loading');
+                        },
+                        complete: function() {
+                          $('#button-voucher').button('reset');
+                        },
+                        success: function(json) {
+                          $('.alert').remove();
+                    
+                          if (json['error']) {
+                             $('#discount-message').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                          }
+                        
+                          if (json['success']) {
+                             $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                             $('#discount-message').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                             
+                             $.ajax({
+                                 type: 'get',
+                             	 url: 'index.php?route=checkout/cart/refresh',
+                              	 dataType: 'json',
+                                 beforeSend: function() {
+                                  	$('#cart > button').button('loading');
+                              	 },  
+                              	 complete: function() {
+                                	$('#cart > button').button('reset');
+                                 },
+                                 success: function(json) {
+                            		setTimeout(function () {
+                            			$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+                            		}, 100);
+                                
+                                }	
+                             });
+
+                		  }
+                       }
+                    });
+                });
+                //--></script>
+                {% endif %}
+                
+                {% if reward_status %}    
+                <script type="text/javascript"><!--
+                $('#button-reward').on('click', function() {
+                	$.ajax({
+                		url: 'index.php?route=extension/total/reward/reward',
+                		type: 'post',
+                		data: 'reward=' + encodeURIComponent($('input[name=\'reward\']').val()),
+                		dataType: 'json',
+                		beforeSend: function() {
+                			$('#button-reward').button('loading');
+                		},
+                		complete: function() {
+                			$('#button-reward').button('reset');
+                		},
+                		success: function(json) {
+                			$('.alert').remove();
+                
+                          if (json['error']) {
+                            $('#discount-message').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                          }
+                    
+            			  if (json['success']) {
+                            $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                            $('#discount-message').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+                           	$.ajax({
+                                type: 'get',
+                        		url: 'index.php?route=checkout/cart/refresh',
+                        		dataType: 'json',
+                                beforeSend: function() {
+                                 	$('#cart > button').button('loading');
+                        		},  
+                        		complete: function() {
+                        				$('#cart > button').button('reset');
+                        		},
+                                success: function(json) {
+                                    
+                    				setTimeout(function () {
+                    					$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+                    				}, 100);
+                 
+                                }	
+                            });
+
+            			  }
+                		}
+                	});
+                });
+                //--></script>
+                {% endif %}
+    
+                <style type="text/css">
+                <!--
+                    @media (min-width: 768px) {
+                    {% if coupon_status and voucher_status and reward_status %}    
+                        #coupon-form, #voucher-form, #reward-form {
+                            float:left;
+                            width:32.33%;
+                            margin:0.5%;"
+                        }
+                    {% elseif (coupon_status and voucher_status) or (coupon_status and reward_status) or (voucher_status and reward_status) %}    
+                        #coupon-form, #voucher-form, #reward-form {
+                            float:left;
+                            width:49%;
+                            margin:0.5%;"
+                        }
+                    {% elseif coupon_status or  voucher_status or reward_status %}     
+                        #coupon-form, #voucher-form, #reward-form {
+                            float:left;
+                            width:99%;
+                            margin:0.5%;"
+                        }
+                    {% endif %} 
+    
+                        .buttons {
+                            float:right;
+                        }
+                    }
+
+                    @media (max-width: 768px) {
+                        #coupon-form, #voucher-form, #reward-form {
+                            width:100%;
+                            margin-top:1.5%;"
+                        }
+                    }
+                -->
+                </style>
+            {% endif %}
+            
 {% if text_agree %}
 <div class="buttons">
   <div class="pull-right">{{ text_agree }}

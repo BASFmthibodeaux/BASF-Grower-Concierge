@@ -4,6 +4,7 @@
 	<version>300.1</version>
 	<vqmver>2.6.2</vqmver>
 
+	<!-- Edit language of account page -->
 	<file name="catalog/language/en-gb/account/account.php">
 		<operation>
 			<search position="after"><![CDATA[
@@ -12,12 +13,13 @@
 			<add><![CDATA[
             // BASF Account
 			$_['text_basf_greeting']  = 'Hello, <strong>%s</strong>.';
-			$_['text_basf_credits']   = 'You have <strong>%d</strong> BASF remaining.';
+			$_['text_basf_credits']   = 'You have <strong>%d</strong> BASF Dollars remaining.';
 			$_['text_basf_home']	  = 'View Home Page';
             ]]></add>
 		</operation>
     </file>
 
+	<!-- Get the logged in account's BASF Dollars balance and pass it to the template -->
 	<file name="catalog/controller/account/account.php">
 		<operation>
 			<search position="after"><![CDATA[
@@ -34,7 +36,8 @@
 		</operation>
     </file>
 
-	<file name="catalog/view/theme/basf/template/account/account.twig">
+	<!-- Display logged in account's BASF Dollars balance -->
+	<file name="catalog/view/theme/*/template/account/account.twig">
 		<operation>
 			<search position="replace" offset="38"><![CDATA[
 			<h2>{{ text_my_account }}</h2>
@@ -46,5 +49,4 @@
             ]]></add>
 		</operation>
     </file>
-    
 </modification>

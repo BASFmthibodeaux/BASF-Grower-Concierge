@@ -6,7 +6,7 @@
             // Text
             $_['text_reward']   = 'BASF Dollars (%s)';
             $_['text_order_id'] = 'Order ID: #%s';
-            $_['text_success']  = 'Success: Your BASF Dollars discount has been applied!';
+            $_['text_success']  = 'Success: Your BASF Dollars have been applied!';
 
             // Entry
             $_['entry_reward']  = 'BASF Dollars to use (Max %s)';

@@ -1,0 +1,26 @@
+<modification>
+
+	<id>Edit Checkout</id>
+	<version>300.1</version>
+	<vqmver>2.6.2</vqmver>
+
+    <file name="admin/view/template/customer/customer_form.twig">
+        <operation>
+            <search position="replace"><![CDATA[
+            <li><a href="#tab-affiliate" data-toggle="tab">{{ tab_affiliate }}</a></li>
+            ]]></search>
+            <add><![CDATA[
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            <li class="active"><a href="#tab-customer" data-toggle="tab">{{ tab_general }}</a></li>
+            ]]></search>
+            <add><![CDATA[
+            <li class="active"><a href="#tab-customer" data-toggle="tab">Shipping Addresses</a></li>
+            ]]></add>
+        </operation>
+    </file>
+
+</modification>

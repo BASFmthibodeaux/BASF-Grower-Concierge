@@ -1,0 +1,15 @@
+---------- Date: 2018-12-26 19:38:18 ~ IP : ::1 ----------
+REQUEST URI : /basf_grower_concierge/index.php?route=checkout/confirm
+MOD DETAILS:
+   modFile   : C:\xampp\htdocs\basf_grower_concierge\vqmod/xml/edit_checkout.xml
+   id        : Edit Checkout
+   version   : 300.1
+   vqmver    : 2.6.2
+   author    : 
+
+File Name    : catalog/model/checkout/order.php(0)
+VQModObject::applyMod - SEARCH NOT FOUND (ABORTING MOD): public function addOrder($data) {
+
+----------------------------------------------------------------------
+
+

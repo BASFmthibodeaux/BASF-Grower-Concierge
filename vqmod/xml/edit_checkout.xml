@@ -4,17 +4,51 @@
 	<version>300.1</version>
 	<vqmver>2.6.2</vqmver>
 
+    <!-- Change checkout steps text -->
     <file name="catalog/language/en-gb/checkout/checkout.php">
 		<operation>
-            <search position="replace"><![CDATA[
+            <search position="replace" offset="1"><![CDATA[
             $_['text_checkout_shipping_address'] = 'Step %s: Delivery Details';
             ]]></search>
             <add><![CDATA[
             $_['text_checkout_shipping_address'] = 'Step %s: Customer Details';
+            $_['text_checkout_shipping_method']  = 'Step %s: Delivery Message';
+
+            // Checkout language for grand total, BASF dollars and remaining balance
+            $_['grand_total_text']             = 'Total Due';
+			$_['basf_total_text']              = 'BASF Dollars Used';
+			$_['remaining_total_text']         = 'Remaining Balance';
+
+            // Apply BASF $ during checkout
+            $_['entry_coupon']              = 'Enter your coupon here';
+            $_['use_coupon']                = 'Use Coupon Code';
+            $_['text_success']              = 'Success:Your discount coupon has been successfuly applied to your order!. You will see it in the next checkout step';
+            $_['button_coupon']             = 'Apply Coupon';
+            $_['error_empty_coupon']        = 'Warning: Please enter the code of discount coupon to use!';
+            
+            $_['entry_voucher']             = 'Enter your gift certificate here';
+            $_['use_voucher']               = 'Use Gift Certificate Code';
+            $_['text_success']              = 'Success:Your discount gift certificate has been successfuly applied to your order!. You will see it in the next checkout step';
+            $_['button_voucher']            = 'Apply Gift Certificate';
+            $_['error_empty_voucher']       = 'Warning: Please enter the code of gift certificate to use!';
+    
+            $_['entry_reward']              = 'Enter your BASF Dollars here';
+            $_['use_reward']                = 'Use BASF Dollars (Available %s | Max %s)';
+            $_['button_reward']             = 'Apply BASF $';
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            $_['text_comments']                  = 'Add Comments About Your Order';
+            ]]></search>
+            <add><![CDATA[
+            $_['text_comments']                  = 'Add Custom Message';
             ]]></add>
         </operation>
     </file>>
 
+    <!-- Change numbering for checkout steps and switch to new template -->
     <file name="catalog/controller/checkout/checkout.php">
 		<operation>
             <search position="replace" offset="12"><![CDATA[
@@ -39,7 +73,8 @@
     
     </file>
 
-   <file name="catalog/controller/checkout/payment_method.php">
+    <!-- Remove requirement for payment address to be entered by customer -->
+    <file name="catalog/controller/checkout/payment_method.php">
         <operation>
             <search position="replace"><![CDATA[
             if (isset($this->session->data['payment_address'])) {
@@ -58,6 +93,58 @@
             ]]></add>
         </operation>
 
+        <!-- Apply BASF Dollars -->
+        <operation>
+            <search position="before"><![CDATA[
+            if ($this->config->get('config_checkout_id')) {
+            ]]></search>
+            <add><![CDATA[
+            $data['module_apply_checkout_status'] = $this->config->get('module_apply_checkout_status');
+            
+            $data['coupon_status'] = $this->config->get('total_coupon_status') && $this->config->get('module_apply_checkout_coupon');
+            $data['voucher_status'] = $this->config->get('total_voucher_status') && $this->config->get('module_apply_checkout_voucher');
+
+    		$points = $this->customer->getRewardPoints();
+    
+    		$points_total = 0;
+    
+    		foreach ($this->cart->getProducts() as $product) {
+    			if ($product['points']) {
+    				$points_total += $product['points'];
+    			}
+    		}
+              
+            $data['reward_status'] = ($points && $points_total && $this->config->get('total_reward_status') && $this->config->get('module_apply_checkout_reward'));
+
+            $data['use_reward'] = sprintf($this->language->get('use_reward'), $points, $points_total);
+            ]]></add>
+        </operation>
+		
+        <operation>
+            <search position="before"><![CDATA[
+            if (isset($this->session->data['agree'])) {
+            ]]></search>
+            <add><![CDATA[
+			if (isset($this->session->data['coupon'])) {
+				$data['coupon'] = $this->session->data['coupon'];
+			} else {
+				$data['coupon'] = '';
+			}
+            
+			if (isset($this->session->data['voucher'])) {
+				$data['voucher'] = $this->session->data['voucher'];
+			} else {
+				$data['voucher'] = '';
+			}
+
+			if (isset($this->session->data['reward'])) {
+				$data['reward'] = $this->session->data['reward'];
+			} else {
+				$data['reward'] = '';
+			}
+           ]]></add>
+        </operation>
+
         <operation>
             <search position="replace"><![CDATA[
             if (!isset($this->session->data['payment_address'])) {
@@ -68,7 +155,8 @@
         </operation>
     </file>
 
-     <file name="catalog/controller/checkout/confirm.php">
+    <!-- Remove requirement for payment address to be entered by customer -->
+    <!-- <file name="catalog/controller/checkout/confirm.php">
         <operation>
             <search position="replace" offset="3"><![CDATA[
             // Validate if payment address has been set.
@@ -84,20 +172,285 @@
             <add><![CDATA[
             ]]></add>
         </operation>
-    </file>
+    </file> -->
 
-    <file name="catalog\view\theme\basf\template\checkout\payment_method.twig">
+    <!-- Remove shiping method radio button -->
+    <file name="catalog/view/theme/*/template/checkout/shipping_method.twig">
         <operation>
-            <search position="replace" offset="2"><![CDATA[
-            <p>{{ text_payment_method }}</p>
+            <search position="replace" offset="5"><![CDATA[
+            <p>{{ text_shipping_method }}</p>
             ]]></search>
             <add><![CDATA[
-            <!-- {% for payment_method in payment_methods %}
-            <div class="radio" style="display:none"> -->
+            {% for shipping_method in shipping_methods %}
+            {% if not shipping_method.error %}
+            {% for quote in shipping_method.quote %}
+            <div class="radio" style="display:none">
             ]]></add>
         </operation>
     </file>
 
+    <!-- Remove payment method radio button -->
+    <file name="catalog/view/theme/*/template/checkout/payment_method.twig">
+        <operation>
+            <search position="replace" offset="8"><![CDATA[
+            <p>{{ text_payment_method }}</p>
+            ]]></search>
+            <add><![CDATA[
+            {% for payment_method in payment_methods %}
+            <div class="radio" style="display:none">
+                <label>
+                    {% set code = payment_method.code %}
+                    <input type="radio" name="payment_method" value="{{ payment_method.code }}" checked="checked" />
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace" offset="3"><![CDATA[
+            <p><strong>{{ text_comments }}</strong></p>
+            ]]></search>
+            <add><![CDATA[
+            <p><textarea name="comment" rows="8" class="form-control" style="display:none"></textarea></p>
+            ]]></add>
+        </operation>
+
+
+        <!-- Apply BASF Dollars -->
+        <operation>
+            <search position="before"><![CDATA[
+            {% if text_agree %}
+            ]]></search>
+            <add><![CDATA[
+            {% if module_apply_checkout_status %}
+                <div id="discount-message"></div>
+                
+                <div id="discounts-forms" style="margin-bottom: 15px; float: left;">
+                  {% if coupon_status %}
+                  <div id = "coupon-form">
+                    <label class="control-label" for="input-coupon"><strong>{{ use_coupon }}</strong></label>
+                    <div class="input-group">
+                      <input type="text" name="coupon" value="{{ coupon }}" placeholder="{{ entry_coupon }}" id="input-coupon" class="form-control" />
+                      <span class="input-group-btn">
+                      <input type="button" value="{{ button_coupon }}" id="button-coupon" data-loading-text="{{ text_loading }}"  class="btn btn-primary" />
+                      </span></div>
+                  </div>
+                  {% endif %}
+    
+                  {% if voucher_status %}
+                  <div id = "voucher-form">
+                    <label class="control-label" for="input-voucher"><strong>{{ use_voucher }}</strong></label>
+                    <div class="input-group">
+                      <input type="text" name="voucher" value="{{ voucher }}" placeholder="{{ entry_voucher }}" id="input-voucher" class="form-control" />
+                      <span class="input-group-btn">
+                      <input type="button" value="{{ button_voucher }}" id="button-voucher" data-loading-text="{{ text_loading }}"  class="btn btn-primary" />
+                      </span></div>
+                  </div>
+                  {% endif %}
+    
+                  {% if reward_status %}
+                  <div id = "reward-form">
+                    <label class="control-label" for="input-reward"><strong>{{ use_reward }}</strong></label>
+                    <div class="input-group">
+                      <input type="text" name="reward" value="{{ reward }}" placeholder="{{ entry_reward }}" id="input-reward" class="form-control" />
+                      <span class="input-group-btn">
+                      <input type="button" value="{{ button_reward }}" id="button-reward" data-loading-text="{{ text_loading }}"  class="btn btn-primary" />
+                      </span></div>
+                  </div>
+                  {% endif %}
+                
+                {% if coupon_status %}
+                <script type="text/javascript"><!--
+                $('#button-coupon').on('click', function() {
+                	$.ajax({
+                		url: 'index.php?route=extension/total/coupon/coupon',
+                		type: 'post',
+                		data: 'coupon=' + encodeURIComponent($('input[name=\'coupon\']').val()),
+                		dataType: 'json',
+                		beforeSend: function() {
+                			$('#button-coupon').button('loading');
+                		},
+                		complete: function() {
+                			$('#button-coupon').button('reset');
+                		},
+                		success: function(json) {
+                			$('.alert').remove();
+                
+                			if (json['error']) {
+                				$('#discount-message').after('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                			}
+                
+                			if (json['success']) {
+                			    $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                                $('#discount-message').after('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+                               	$.ajax({
+                                    type: 'get',
+                            		url: 'index.php?route=checkout/cart/refresh',
+                            		dataType: 'json',
+                                    beforeSend: function() {
+                                     	$('#cart > button').button('loading');
+                            		},  
+                            		complete: function() {
+                            				$('#cart > button').button('reset');
+                            		},
+                                    success: function(json) {
+                                        
+                        				setTimeout(function () {
+                        					$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+                        				}, 100);
+                     
+                                    }	
+                                });
+
+                			}
+                		}
+                	});
+                });
+                //--></script>
+                {% endif %}
+                
+                {% if voucher_status %}
+                <script type="text/javascript"><!--
+                $('#button-voucher').on('click', function() {
+                    $.ajax({
+                        url: 'index.php?route=extension/total/voucher/voucher',
+                        type: 'post',
+                        data: 'voucher=' + encodeURIComponent($('input[name=\'voucher\']').val()),
+                        dataType: 'json',
+                        beforeSend: function() {
+                          $('#button-voucher').button('loading');
+                        },
+                        complete: function() {
+                          $('#button-voucher').button('reset');
+                        },
+                        success: function(json) {
+                          $('.alert').remove();
+                    
+                          if (json['error']) {
+                             $('#discount-message').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                          }
+                        
+                          if (json['success']) {
+                             $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                             $('#discount-message').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                             
+                             $.ajax({
+                                 type: 'get',
+                             	 url: 'index.php?route=checkout/cart/refresh',
+                              	 dataType: 'json',
+                                 beforeSend: function() {
+                                  	$('#cart > button').button('loading');
+                              	 },  
+                              	 complete: function() {
+                                	$('#cart > button').button('reset');
+                                 },
+                                 success: function(json) {
+                            		setTimeout(function () {
+                            			$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+                            		}, 100);
+                                
+                                }	
+                             });
+
+                		  }
+                       }
+                    });
+                });
+                //--></script>
+                {% endif %}
+                
+                {% if reward_status %}    
+                <script type="text/javascript"><!--
+                $('#button-reward').on('click', function() {
+                	$.ajax({
+                		url: 'index.php?route=extension/total/reward/reward',
+                		type: 'post',
+                		data: 'reward=' + encodeURIComponent($('input[name=\'reward\']').val()),
+                		dataType: 'json',
+                		beforeSend: function() {
+                			$('#button-reward').button('loading');
+                		},
+                		complete: function() {
+                			$('#button-reward').button('reset');
+                		},
+                		success: function(json) {
+                			$('.alert').remove();
+                
+                          if (json['error']) {
+                            $('#discount-message').before('<div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> ' + json['error'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+                          }
+                    
+            			  if (json['success']) {
+                            $('#cart > ul').load('index.php?route=common/cart/info ul li');
+                            $('#discount-message').before('<div class="alert alert-success"><i class="fa fa-check-circle"></i> ' + json['success'] + '<button type="button" class="close" data-dismiss="alert">&times;</button></div>');
+
+                           	$.ajax({
+                                type: 'get',
+                        		url: 'index.php?route=checkout/cart/refresh',
+                        		dataType: 'json',
+                                beforeSend: function() {
+                                 	$('#cart > button').button('loading');
+                        		},  
+                        		complete: function() {
+                        				$('#cart > button').button('reset');
+                        		},
+                                success: function(json) {
+                                    
+                    				setTimeout(function () {
+                    					$('#cart > button').html('<span id="cart-total"><i class="fa fa-shopping-cart"></i> ' + json['total'] + '</span>');
+                    				}, 100);
+                 
+                                }	
+                            });
+
+            			  }
+                		}
+                	});
+                });
+                //--></script>
+                {% endif %}
+    
+                <style type="text/css">
+                <!--
+                    @media (min-width: 768px) {
+                    {% if coupon_status and voucher_status and reward_status %}    
+                        #coupon-form, #voucher-form, #reward-form {
+                            float:left;
+                            width:32.33%;
+                            margin:0.5%;"
+                        }
+                    {% elseif (coupon_status and voucher_status) or (coupon_status and reward_status) or (voucher_status and reward_status) %}    
+                        #coupon-form, #voucher-form, #reward-form {
+                            float:left;
+                            width:49%;
+                            margin:0.5%;"
+                        }
+                    {% elseif coupon_status or  voucher_status or reward_status %}     
+                        #coupon-form, #voucher-form, #reward-form {
+                            float:left;
+                            width:99%;
+                            margin:0.5%;"
+                        }
+                    {% endif %} 
+    
+                        .buttons {
+                            float:right;
+                        }
+                    }
+
+                    @media (max-width: 768px) {
+                        #coupon-form, #voucher-form, #reward-form {
+                            width:100%;
+                            margin-top:1.5%;"
+                        }
+                    }
+                -->
+                </style>
+            {% endif %}
+            ]]></add>
+        </operation>
+    </file>
+
+    <!-- Leave payment address fields as blank in DB --> <!-- *** TODO *** -->
     <file name="catalog/model/checkout/order.php">
 		<operation>
             <search position="replace" offset="1"><![CDATA[
@@ -109,6 +462,5 @@
             ]]></add>
         </operation>
     </file>
-
 
 </modification>

@@ -75,7 +75,7 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			}
 
 			array_multisort($sort_order, SORT_ASC, $method_data);
-
+			
 			$this->session->data['payment_methods'] = $method_data;
 		}
 
@@ -105,6 +105,26 @@ class ControllerCheckoutPaymentMethod extends Controller {
 
 		$data['scripts'] = $this->document->getScripts();
 
+
+            $data['module_apply_checkout_status'] = $this->config->get('module_apply_checkout_status');
+            
+            $data['coupon_status'] = $this->config->get('total_coupon_status') && $this->config->get('module_apply_checkout_coupon');
+            $data['voucher_status'] = $this->config->get('total_voucher_status') && $this->config->get('module_apply_checkout_voucher');
+
+    		$points = $this->customer->getRewardPoints();
+    
+    		$points_total = 0;
+    
+    		foreach ($this->cart->getProducts() as $product) {
+    			if ($product['points']) {
+    				$points_total += $product['points'];
+    			}
+    		}
+              
+            $data['reward_status'] = ($points && $points_total && $this->config->get('total_reward_status') && $this->config->get('module_apply_checkout_reward'));
+
+            $data['use_reward'] = sprintf($this->language->get('use_reward'), $points, $points_total);
+            
 		if ($this->config->get('config_checkout_id')) {
 			$this->load->model('catalog/information');
 
@@ -119,6 +139,25 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			$data['text_agree'] = '';
 		}
 
+
+			if (isset($this->session->data['coupon'])) {
+				$data['coupon'] = $this->session->data['coupon'];
+			} else {
+				$data['coupon'] = '';
+			}
+            
+			if (isset($this->session->data['voucher'])) {
+				$data['voucher'] = $this->session->data['voucher'];
+			} else {
+				$data['voucher'] = '';
+			}
+
+			if (isset($this->session->data['reward'])) {
+				$data['reward'] = $this->session->data['reward'];
+			} else {
+				$data['reward'] = '';
+			}
+           
 		if (isset($this->session->data['agree'])) {
 			$data['agree'] = $this->session->data['agree'];
 		} else {
@@ -170,6 +209,26 @@ class ControllerCheckoutPaymentMethod extends Controller {
 			$json['error']['warning'] = $this->language->get('error_payment');
 		}
 
+
+            $data['module_apply_checkout_status'] = $this->config->get('module_apply_checkout_status');
+            
+            $data['coupon_status'] = $this->config->get('total_coupon_status') && $this->config->get('module_apply_checkout_coupon');
+            $data['voucher_status'] = $this->config->get('total_voucher_status') && $this->config->get('module_apply_checkout_voucher');
+
+    		$points = $this->customer->getRewardPoints();
+    
+    		$points_total = 0;
+    
+    		foreach ($this->cart->getProducts() as $product) {
+    			if ($product['points']) {
+    				$points_total += $product['points'];
+    			}
+    		}
+              
+            $data['reward_status'] = ($points && $points_total && $this->config->get('total_reward_status') && $this->config->get('module_apply_checkout_reward'));
+
+            $data['use_reward'] = sprintf($this->language->get('use_reward'), $points, $points_total);
+            
 		if ($this->config->get('config_checkout_id')) {
 			$this->load->model('catalog/information');
 

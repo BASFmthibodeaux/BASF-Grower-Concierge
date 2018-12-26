@@ -1,0 +1,609 @@
+<modification>
+
+	<id>Rewards Points/Vendor Access</id>
+	<version>300.1</version>
+	<vqmver>2.6.2</vqmver>
+
+    <!-- REQUIRED For Vendor Access: Change User Group 'Demonstration' to 'Vendors' and add 
+        Users under 'Vendors'. Make sure user_group_id = 10 in DB. Create 'vendor_id' in 
+        'DB_PREFIX . product' -->
+    
+    <!-- Admin_Language -->
+    <!-- Replace "Reward Points" with "BASF Dollars" -->
+    <file name="admin/language/en-gb/en-gb.php">
+        <operation>
+            <search position="replace" offset="1"><![CDATA[
+            $_['button_reward_add']             = 'Add Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['button_reward_add']             = 'Add BASF Dollars';
+            $_['button_reward_remove']          = 'Remove BASF Dollars';
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            $_['tab_reward']                    = 'Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['tab_reward']                    = 'BASF Dollars';
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="admin/language/en-gb/extension/total/reward.php">
+        <operation>
+            <search position="replace" offset="12"><![CDATA[
+            $_['heading_title']    = 'Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['heading_title']    = 'BASF Dollars';
+
+            // Text
+            $_['text_extension']   = 'Extensions';
+            $_['text_success']     = 'Success: You have modified BASF dollars total!';
+            $_['text_edit']        = 'Edit BASF Dollars Total';
+
+            // Entry
+            $_['entry_status']     = 'Status';
+            $_['entry_sort_order'] = 'Sort Order';
+
+            // Error
+            $_['error_permission'] = 'Warning: You do not have permission to modify BASF dollars total!';
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="admin/language/en-gb/catalog/product.php">
+        <operation>
+            <search position="replace" offset="1"><![CDATA[
+            $_['entry_points']           = 'Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['entry_points']           = 'BASF Dollars';
+            $_['entry_option_points']    = 'BASF Dollars';
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            $_['entry_reward']           = 'Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['entry_reward']           = 'BASF Dollars';
+            ]]></add>
+        </operation>
+
+         <operation>
+            <search position="replace"><![CDATA[
+            $_['help_points']            = 'Number of points needed to buy this item. If you don\'t want this product to be purchased with points leave as 0.';
+            ]]></search>
+            <add><![CDATA[
+            $_['help_points']            = 'Number of BASF Dollars needed to buy this item. To change this value, change and save the price.';
+            $_['help_rewards']           = 'BASF Dollars to be added as rewards for purchasing this product.';
+            ]]></add>
+        </operation>
+
+        <!-- Add language for vendor selection -->
+        <operation>
+			<search position="after"><![CDATA[
+            $_['error_unique']           = 'SEO URL must be unique!';
+			]]></search>
+			<add><![CDATA[
+            $_['error_vendor']           = "Must select a vendor!";
+            $_['entry_vendor']           = 'Vendor';
+            $_['help_vendor']            = 'Select Vendor Account';
+            $_['column_vendor']          = 'Vendor';
+	        ]]></add>
+		</operation>
+    </file>
+
+    <file name="admin/language/en-gb/customer/customer.php">
+        <operation>
+            <search position="replace" offset="1"><![CDATA[
+            $_['text_reward']               = 'Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['text_reward']               = 'BASF Dollars';
+            $_['text_reward_add']           = 'Add BASF Dollars';
+            ]]></add>
+        </operation>
+    </file>
+
+    <!-- Catalog_Language -->
+    <!-- Replace "Reward Points" with "BASF Dollars" -->
+    <file name="catalog/language/en-gb/account/reward.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            $_['heading_title']      = 'Your Reward Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['heading_title']      = 'Your BASF Dollars';
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace" offset="6"><![CDATA[
+            $_['column_points']      = 'Points';
+            ]]></search>
+            <add><![CDATA[
+            $_['column_points']      = 'BASF Dollars';
+
+            // Text
+            $_['text_account']       = 'Account';
+            $_['text_reward']        = 'BASF Dollars';
+            $_['text_total']         = 'Your total number of BASF Dollars is:';
+            $_['text_empty']         = 'You do not have any BASF Dollars!';
+            ]]></add>
+        </operation>
+    </file>
+    
+    <file name="catalog/language/en-gb/product/product.php">
+        <operation>
+            <search position="replace" offset="1"><![CDATA[
+            $_['text_reward']              = 'Reward Points:';
+            ]]></search>
+            <add><![CDATA[
+            $_['text_reward']              = 'BASF Rewards:';
+            $_['text_points']              = 'Price in BASF Dollars:';
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="catalog/language/en-gb/extension/total/reward.php">
+        <operation>
+            <search position="replace" offset="13"><![CDATA[
+            $_['heading_title'] = 'Use Reward Points (Available %s)';
+            ]]></search>
+            <add><![CDATA[
+            $_['heading_title'] = 'Use BASF Dollars (Available %s)';
+
+            // Text
+            $_['text_reward']   = 'BASF Dollars (%s)';
+            $_['text_order_id'] = 'Order ID: #%s';
+            $_['text_success']  = 'Success: Your BASF Dollars have been applied!';
+
+            // Entry
+            $_['entry_reward']  = 'BASF Dollars to use (Max %s)';
+
+            // Error
+            $_['error_reward']  = 'Warning: Please enter the amount of BASF Dollars to use!';
+            $_['error_points']  = 'Warning: You don\'t have %s BASF Dollars!';
+            $_['error_maximum'] = 'Warning: The maximum number of BASF Dollars that can be applied is %s!';
+            ]]></add>
+        </operation>
+    </file>
+
+    <file name="catalog/language/en-gb/checkout/cart.php">
+        <operation>
+            <search position="replace" offset="2"><![CDATA[
+            $_['text_points']              = 'Reward Points: %s';
+            ]]></search>
+            <add><![CDATA[
+            $_['text_points']              = 'BASF Rewards: %s';
+            $_['text_next']                = 'What would you like to do next?';
+            $_['text_next_choice']         = 'Choose if you have a discount code or BASF Dollars you want to use or would like to estimate your delivery cost.';
+            ]]></add>
+        </operation>
+    </file>
+    
+    <!-- Admin/Catalog_Controller/Model/View -->
+    <!-- Add vendor_id when adding/editing/retrieving product to/from DB -->
+    <file name="admin/model/catalog/product.php">
+		<operation>
+			<search position="replace" offset="1"><![CDATA[
+            public function addProduct($data) {
+			]]></search>
+			<add><![CDATA[
+            public function addProduct($data) {
+        		$this->db->query("INSERT INTO " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', vendor_id = '" . (int)$data['vendor_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_added = NOW(), date_modified = NOW()");
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="replace" offset="1"><![CDATA[
+            public function editProduct($product_id, $data) {
+			]]></search>
+			<add><![CDATA[
+            public function editProduct($product_id, $data) {
+        		$this->db->query("UPDATE " . DB_PREFIX . "product SET model = '" . $this->db->escape($data['model']) . "', sku = '" . $this->db->escape($data['sku']) . "', upc = '" . $this->db->escape($data['upc']) . "', ean = '" . $this->db->escape($data['ean']) . "', jan = '" . $this->db->escape($data['jan']) . "', isbn = '" . $this->db->escape($data['isbn']) . "', mpn = '" . $this->db->escape($data['mpn']) . "', location = '" . $this->db->escape($data['location']) . "', quantity = '" . (int)$data['quantity'] . "', minimum = '" . (int)$data['minimum'] . "', subtract = '" . (int)$data['subtract'] . "', stock_status_id = '" . (int)$data['stock_status_id'] . "', date_available = '" . $this->db->escape($data['date_available']) . "', manufacturer_id = '" . (int)$data['manufacturer_id'] . "', vendor_id = '" . (int)$data['vendor_id'] . "', shipping = '" . (int)$data['shipping'] . "', price = '" . (float)$data['price'] . "', points = '" . (int)$data['points'] . "', weight = '" . (float)$data['weight'] . "', weight_class_id = '" . (int)$data['weight_class_id'] . "', length = '" . (float)$data['length'] . "', width = '" . (float)$data['width'] . "', height = '" . (float)$data['height'] . "', length_class_id = '" . (int)$data['length_class_id'] . "', status = '" . (int)$data['status'] . "', tax_class_id = '" . (int)$data['tax_class_id'] . "', sort_order = '" . (int)$data['sort_order'] . "', date_modified = NOW() WHERE product_id = '" . (int)$product_id . "'");
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+            'p.status',
+			]]></search>
+			<add><![CDATA[
+            'p.vendor_id',
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+            if (isset($data['filter_status']) && $data['filter_status'] !== '') {
+			]]></search>
+			<add><![CDATA[
+            if (!empty($data['filter_vendor_id'])) {
+			    $sql .= " AND p.vendor_id = '" . (int)$data['filter_vendor_id'] . "'";
+		    }
+	        ]]></add>
+		</operation>
+    </file>
+
+    <file name="catalog/model/catalog/product.php">
+        <!-- Add access to vendor_id field when accessing the product -->
+		<operation>
+            <search position="replace" offset="1"><![CDATA[
+			public function getProduct($product_id) {
+            ]]></search>
+            <add><![CDATA[
+            public function getProduct($product_id) {
+				$query = $this->db->query("SELECT DISTINCT *, pd.name AS name, p.image, p.vendor_id, m.name AS manufacturer, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount, (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special, (SELECT points FROM " . DB_PREFIX . "product_reward pr WHERE pr.product_id = p.product_id AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "') AS reward, (SELECT ss.name FROM " . DB_PREFIX . "stock_status ss WHERE ss.stock_status_id = p.stock_status_id AND ss.language_id = '" . (int)$this->config->get('config_language_id') . "') AS stock_status, (SELECT wcd.unit FROM " . DB_PREFIX . "weight_class_description wcd WHERE p.weight_class_id = wcd.weight_class_id AND wcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS weight_class, (SELECT lcd.unit FROM " . DB_PREFIX . "length_class_description lcd WHERE p.length_class_id = lcd.length_class_id AND lcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS length_class, (SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, (SELECT COUNT(*) AS total FROM " . DB_PREFIX . "review r2 WHERE r2.product_id = p.product_id AND r2.status = '1' GROUP BY r2.product_id) AS reviews, p.sort_order FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) LEFT JOIN " . DB_PREFIX . "manufacturer m ON (p.manufacturer_id = m.manufacturer_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[
+            'manufacturer_id'  => $query->row['manufacturer_id'],
+            ]]></search>
+            <add><![CDATA[
+            'vendor_id'  		   => $query->row['vendor_id'],
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace"><![CDATA[
+            'reward'           => $query->row['reward'],
+            ]]></search>
+            <add><![CDATA[
+            'reward'           => ($query->row['reward'] ? $query->row['reward'] : 0),            
+            ]]></add>
+        </operation>
+    </file>>
+
+    <!-- Max BASF Dollars that can be used equals total value of products -->
+    <!-- <file name="catalog/model/extension/total/reward.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            $points_total += $product['points'];
+            ]]></search>
+            <add><![CDATA[
+            $points_total += $product['total'];
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="replace" index="2" offset="18"><![CDATA[
+            foreach ($this->cart->getProducts() as $product) {
+            ]]></search>
+            <add><![CDATA[
+            $discount_total = $this->session->data['reward'];
+            ]]></add>
+        </operation>
+    </file> -->
+
+    <!-- If vendor is logged in, set vendor_id from account or 
+        if admin logged in, set vendor_id selected by admin.
+        For admin, allow filter by vendor; for vendor, show only 
+        filtered list with filter hidden -->
+    <file name="admin/controller/catalog/product.php">
+		<operation>
+			<search position="after"><![CDATA[
+            protected function getList() {
+			]]></search>
+			<add><![CDATA[
+            $this->load->model('user/user');
+		
+		    $data['vendors'] = array();
+		    $users = $this->model_user_user->getUsers();
+		
+            foreach ($users as $user) {
+                if ((int)$user['user_group_id'] == 10) {
+                    $data['vendors'][] = array(
+                        'vendor_id' 	 => $user['user_id'],
+                        'name'			 => $user['username']
+                    );
+                }
+            }
+
+            $filter_vendor_id = null;
+            $user_info = $this->model_user_user->getUser($this->user->getId());
+            $data['user_group_id'] = $user_info['user_group_id'];
+            
+            if ((int)$user_info['user_group_id'] == 10) {
+                $filter_vendor_id = $user_info['user_id'];
+            } else if ((int)$user_info['user_group_id'] == 1) {
+                $data['admin_user'] = true;
+
+                if ($filter_vendor_id == null) {
+                    if (isset($this->request->get['filter_vendor_id'])) {
+                        $filter_vendor_id = $this->request->get['filter_vendor_id'];
+                    } else{
+                        $filter_vendor_id = '';
+                    }
+                }
+            }
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before" index="6,7,8"><![CDATA[
+            if (isset($this->request->get['filter_status'])) {
+			]]></search>
+			<add><![CDATA[
+            if ($filter_vendor_id == null && isset($this->request->get['filter_vendor_id'])) {
+                $url .= '&filter_vendor_id=' . $this->request->get['filter_vendor_id'];
+            }
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+            'filter_status'   => $filter_status,
+			]]></search>
+			<add><![CDATA[
+            'filter_vendor_id'	  => $filter_vendor_id,
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="after"><![CDATA[
+            'quantity'   => $result['quantity'],
+			]]></search>
+			<add><![CDATA[
+            'vendor_id'	 => $result['vendor_id'],
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			$data['sort_status'] = $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token'] . '&sort=p.status' . $url, true);
+            ]]></search>
+			<add><![CDATA[
+	        $data['sort_vendor_id'] = $this->url->link('catalog/product', 'user_token=' . $this->session->data['user_token'] . '&sort=p.vendor_id' . $url, true);
+            ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			$data['filter_status'] = $filter_status;
+            ]]></search>
+			<add><![CDATA[
+	        $data['filter_vendor_id'] = $filter_vendor_id;
+            ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			if (isset($this->error['keyword'])) {
+            ]]></search>
+			<add><![CDATA[
+	        if (isset($this->error['vendor'])) {
+                $data['error_vendor'] = $this->error['vendor'];
+            } else {
+                $data['error_vendor'] = '';
+            }
+            ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			if ($this->request->post['product_seo_url']) {
+            ]]></search>
+			<add><![CDATA[
+	        if (!isset($this->request->post['vendor_id'])) {
+			    $this->error['vendor'] = $this->language->get('error_vendor');
+		    }
+            ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			// Categories
+            ]]></search>
+			<add><![CDATA[
+	        // Vendor
+            $this->load->model('user/user');
+            
+            $data['vendor_users'] = array();
+            $users = $this->model_user_user->getUsers();
+            
+            foreach ($users as $user) {
+                if ((int)$user['user_group_id'] == 10) {
+                    $data['vendor_users'][] = array(
+                        'vendor_user_id' => $user['user_id'],
+                        'name'			 => $user['username']
+                    );
+                }
+            }
+
+            $user_info = $this->model_user_user->getUser($this->user->getId());
+            $data['user_group_id'] = $user_info['user_group_id'];
+
+
+            if ((int)$user_info['user_group_id'] == 10) {
+                if (empty($product_info)) {
+                    $data['vendor_id'] = $user_info['user_id'];
+                } else {
+                    $data['vendor_id'] = $product_info['vendor_id'];
+                }
+            } else {
+                if (isset($this->request->post['vendor_id'])) {
+                    $data['vendor_id'] = $this->request->post['vendor_id'];
+                } elseif (!empty($product_info)) {
+                    $data['vendor_id'] = $product_info['vendor_id'];
+                } else {
+                    $data['vendor_id'] = '';
+                }
+            }
+            ]]></add>
+		</operation>
+
+    </file>
+
+    <file name="catalog/controller/extension/total/reward.php">
+        <operation>
+            <search position="replace"><![CDATA[
+            $points_total += $product['points'];
+            ]]></search>
+            <add><![CDATA[
+            $points_total += $product['total'];
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[
+            $json['redirect'] = $this->url->link('checkout/cart');
+            ]]></search>
+            <add><![CDATA[
+            $json['success'] = $this->language->get('text_success');
+            ]]></add>
+        </operation>
+    </file>
+
+    <!-- show vendor filter if admin logged in -->
+    <file name="admin/view/template/catalog/product_list.twig">
+		<operation>
+			<search position="after" offset="1"><![CDATA[
+            <input type="text" name="filter_quantity" value="{{ filter_quantity }}" placeholder="{{ entry_quantity }}" id="input-quantity" class="form-control" />
+			]]></search>
+			<add><![CDATA[
+            <div class="form-group" {% if not admin_user %} style="display:none" {% endif %}>
+              <label class="control-label" for="input-vendor">{{ entry_vendor }}</label>
+              <select name="filter_vendor_id" id="input-vendor" class="form-control"> 
+                <option value=""></option>
+                {% for vendor in vendors %}
+                {% if vendor.vendor_id == filter_vendor_id %}
+                  <option value="{{ vendor.vendor_id }}" selected="selected">{{ vendor.name }}</option>
+                {% else %}                  
+                  <option value="{{ vendor.vendor_id }}">{{ vendor.name }}</option>
+                {% endif %}
+                {% endfor %}
+              </select>
+            </div>
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="after"><![CDATA[
+            <td class="text-right">{% if sort == 'p.quantity' %} <a href="{{ sort_quantity }}" class="{{ order|lower }}">{{ column_quantity }}</a> {% else %} <a href="{{ sort_quantity }}">{{ column_quantity }}</a> {% endif %}</td>
+			]]></search>
+			<add><![CDATA[
+            {% if admin_user %} 
+                <td class="text-left">{% if sort == 'p.vendor_id' %} <a href="{{ sort_vendor_id }}" class="{{ order|lower }}">{{ column_vendor }}</a> {% else %} <a href="{{ sort_vendor_id }}">{{ column_vendor }}</a> {% endif %}</td>
+            {% endif %}
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="after"><![CDATA[
+            <td class="text-right">{% if product.quantity <= 0 %} <span class="label label-warning">{{ product.quantity }}</span> {% elseif product.quantity <= 5 %} <span class="label label-danger">{{ product.quantity }}</span> {% else %} <span class="label label-success">{{ product.quantity }}</span> {% endif %}</td>
+			]]></search>
+			<add><![CDATA[
+            {% if admin_user %} 
+                {% for vendor in vendors %}
+                    {% if vendor.vendor_id == product.vendor_id %}
+                        <td class="text-left">{{ vendor.name }}</td>
+                    {% endif %}
+                {% endfor %}
+            {% endif %} 
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="replace"><![CDATA[
+            <td class="text-center" colspan="8">{{ text_no_results }}</td>
+			]]></search>
+			<add><![CDATA[
+            {% if admin_user %} 
+				<td class="text-center" colspan="9">{{ text_no_results }}</td>
+			{% else %} 
+				<td class="text-center" colspan="8">{{ text_no_results }}</td>
+			{% endif %}
+	        ]]></add>
+		</operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+            var filter_status = $('select[name=\'filter_status\']').val();
+			]]></search>
+			<add><![CDATA[
+            var filter_vendor_id = $('select[name=\'filter_vendor_id\']').val();
+            if (filter_vendor_id) {
+                url += '&filter_vendor_id=' + encodeURIComponent(filter_vendor_id);
+            }
+	        ]]></add>
+		</operation>
+    </file>
+    
+    <file name="admin/view/template/catalog/product_form.twig">
+        <!-- Allow only admin to select vendor when adding product, else vendor is autoselected -->
+        <operation>
+			<search position="after" offset="2"><![CDATA[
+            <input type="hidden" name="manufacturer_id" value="{{ manufacturer_id }}" />
+			]]></search>
+			<add><![CDATA[
+            <div class="form-group required" {% if user_group_id != 1 %} style="display:none" {% endif %}>
+                <label class="col-sm-2 control-label" for="input-vendor"><span data-toggle="tooltip" title="{{ help_vendor}}">{{ entry_vendor }}</span></label>
+                <div class="col-sm-10">
+                  <select required name="vendor_id" id="input-vendor" class="form-control">
+                    <option value="" disabled selected>-- Select A Vendor --</option>
+                    {% for vendor_user in vendor_users %}   
+                    {% if vendor_user.vendor_user_id == vendor_id %}
+                      <option value="{{ vendor_user.vendor_user_id }}" selected="selected">{{ vendor_user.name }}</option>
+                    {% else %}                  
+                      <option value="{{ vendor_user.vendor_user_id }}">{{ vendor_user.name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                  </select>
+                  {% if error_vendor %}
+                  <div class="text-danger">{{ error_vendor }}</div>
+                  {% endif %}
+                </div>
+            </div>
+	        ]]></add>
+		</operation>
+
+        <!-- Change BASF Dollars value only and autmatically when price is changed -->
+        <operation>
+            <search position="ibefore"><![CDATA[
+             type="text" name="points" value="{{ points }}" placeholder="{{ entry_points }}" id="input-points" class="form-control" />
+            ]]></search>
+            <add><![CDATA[
+             readonly id="basf"
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="ibefore"><![CDATA[
+             type="text" name="price" value="{{ price }}" placeholder="{{ entry_price }}" id="input-price" class="form-control" />
+            ]]></search>
+            <add><![CDATA[
+             id="price" 
+            ]]></add>
+        </operation>
+        
+        <operation>
+            <search position="replace"><![CDATA[
+            <td class="text-right">{{ entry_reward }}</td>
+            ]]></search>
+            <add><![CDATA[
+            <td class="text-right"><span data-toggle="tooltip" title="{{ help_rewards }}">{{ entry_reward }}</span></td>
+            ]]></add>
+        </operation>
+
+        <operation>
+            <search position="before"><![CDATA[
+            // Category
+            ]]></search>
+            <add><![CDATA[
+            $('#price').on('input', function(){
+                var valueOfID = $(this).val();
+                $('#basf').val(valueOfID);
+            });
+            ]]></add>
+        </operation>
+    </file>
+
+</modification>

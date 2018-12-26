@@ -1,6 +1,6 @@
 <?php
 class ModelExtensionDashboardChart extends Model {
-	public function getTotalOrdersByDay() {
+	public function getTotalOrdersByDay($vendor_id = null) {
 		$implode = array();
 
 		foreach ($this->config->get('config_complete_status') as $order_status_id) {
@@ -16,7 +16,13 @@ class ModelExtensionDashboardChart extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_added) AS hour FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND DATE(date_added) = DATE(NOW()) GROUP BY HOUR(date_added) ORDER BY date_added ASC");
+		// Avash
+		if ($vendor_id == null || $vendor_id == 0) {
+			$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_added) AS hour FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND DATE(date_added) = DATE(NOW()) GROUP BY HOUR(date_added) ORDER BY date_added ASC");
+		} else {
+			$query = $this->db->query("SELECT COUNT(*) AS total, HOUR(date_added) AS hour FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") ANd vendor_id = '" . (int)$vendor_id . "' AND DATE(date_added) = DATE(NOW()) GROUP BY HOUR(date_added) ORDER BY date_added ASC");
+		}
+
 
 		foreach ($query->rows as $result) {
 			$order_data[$result['hour']] = array(
@@ -28,7 +34,7 @@ class ModelExtensionDashboardChart extends Model {
 		return $order_data;
 	}
 
-	public function getTotalOrdersByWeek() {
+	public function getTotalOrdersByWeek($vendor_id = null) {
 		$implode = array();
 
 		foreach ($this->config->get('config_complete_status') as $order_status_id) {
@@ -48,7 +54,12 @@ class ModelExtensionDashboardChart extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND DATE(date_added) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_added)");
+		// Avash
+		if ($vendor_id == null || $vendor_id == 0) {
+			$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND DATE(date_added) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_added)");
+		} else {
+			$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND vendor_id = '" . (int)$vendor_id . "' AND DATE(date_added) >= DATE('" . $this->db->escape(date('Y-m-d', $date_start)) . "') GROUP BY DAYNAME(date_added)");
+		}
 
 		foreach ($query->rows as $result) {
 			$order_data[date('w', strtotime($result['date_added']))] = array(
@@ -60,7 +71,7 @@ class ModelExtensionDashboardChart extends Model {
 		return $order_data;
 	}
 
-	public function getTotalOrdersByMonth() {
+	public function getTotalOrdersByMonth($vendor_id = null) {
 		$implode = array();
 
 		foreach ($this->config->get('config_complete_status') as $order_status_id) {
@@ -78,7 +89,12 @@ class ModelExtensionDashboardChart extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND DATE(date_added) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_added)");
+		// Avash 
+		if ($vendor_id == null || $vendor_id == 0) {
+			$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND DATE(date_added) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_added)");
+		} else {
+			$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND vendor_id = '" . (int)$vendor_id . "' AND DATE(date_added) >= '" . $this->db->escape(date('Y') . '-' . date('m') . '-1') . "' GROUP BY DATE(date_added)");
+		}
 
 		foreach ($query->rows as $result) {
 			$order_data[date('j', strtotime($result['date_added']))] = array(
@@ -90,7 +106,7 @@ class ModelExtensionDashboardChart extends Model {
 		return $order_data;
 	}
 
-	public function getTotalOrdersByYear() {
+	public function getTotalOrdersByYear($vendor_id = null) {
 		$implode = array();
 
 		foreach ($this->config->get('config_complete_status') as $order_status_id) {
@@ -106,7 +122,12 @@ class ModelExtensionDashboardChart extends Model {
 			);
 		}
 
-		$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND YEAR(date_added) = YEAR(NOW()) GROUP BY MONTH(date_added)");
+		// Avash
+		if ($vendor_id == null || $vendor_id == 0) {
+			$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND YEAR(date_added) = YEAR(NOW()) GROUP BY MONTH(date_added)");
+		} else {
+			$query = $this->db->query("SELECT COUNT(*) AS total, date_added FROM `" . DB_PREFIX . "order` WHERE order_status_id IN(" . implode(",", $implode) . ") AND vendor_id = '" . (int)$vendor_id . "' AND YEAR(date_added) = YEAR(NOW()) GROUP BY MONTH(date_added)");
+		}
 
 		foreach ($query->rows as $result) {
 			$order_data[date('n', strtotime($result['date_added']))] = array(

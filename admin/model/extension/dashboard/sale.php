@@ -3,6 +3,11 @@ class ModelExtensionDashboardSale extends Model {
 	public function getTotalSales($data = array()) {
 		$sql = "SELECT SUM(total) AS total FROM `" . DB_PREFIX . "order` WHERE order_status_id > '0'";
 
+		// Avash
+		if (!empty($data['vendor_id']) && (int)$data['vendor_id'] != 0) {
+			$sql .= " AND vendor_id = '" . (int)$data['vendor_id'] . "'";
+		}
+
 		if (!empty($data['filter_date_added'])) {
 			$sql .= " AND DATE(date_added) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
 		}

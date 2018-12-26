@@ -2,7 +2,6 @@
 class ControllerCommonHeader extends Controller {
 	public function index() {
 
-			//Q: Force Customer Login
 			if (!$this->customer->isLogged()) {
 				$match = false;
 				if (!empty($this->request->get['route'])) {

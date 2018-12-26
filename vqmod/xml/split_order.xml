@@ -1,0 +1,495 @@
+<modification>
+
+	<id>Split Order</id>
+	<version>300.1</version>
+	<vqmver>2.6.2</vqmver>
+
+	<!-- REQUIRED: Create vendor_id column to DB_PREFIX . cart -->
+	<file name="system/library/cart/cart.php">
+		<operation>
+            <search position="before"><![CDATA[
+            'name'            => $product_query->row['name'],
+            ]]></search>
+            <add><![CDATA[
+            'vendor_id'		  => $product_query->row['vendor_id'],
+            ]]></add>
+        </operation>	
+		
+		<operation>
+            <search position="replace" offset="4"><![CDATA[
+            public function add($product_id, $quantity = 1, $option = array(), $recurring_id = 0) {
+            ]]></search>
+            <add><![CDATA[
+            public function add($product_id, $vendor_id, $quantity = 1, $option = array(), $recurring_id = 0) {
+				$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "cart WHERE api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "' AND customer_id = '" . (int)$this->customer->getId() . "' AND session_id = '" . $this->db->escape($this->session->getId()) . "' AND product_id = '" . (int)$product_id . "' AND recurring_id = '" . (int)$recurring_id . "' AND `option` = '" . $this->db->escape(json_encode($option)) . "'");
+
+				if (!$query->row['total']) { //Avash
+					$this->db->query("INSERT " . DB_PREFIX . "cart SET api_id = '" . (isset($this->session->data['api_id']) ? (int)$this->session->data['api_id'] : 0) . "', customer_id = '" . (int)$this->customer->getId() . "', session_id = '" . $this->db->escape($this->session->getId()) . "', product_id = '" . (int)$product_id . "', vendor_id = '" . (int)$vendor_id . "', recurring_id = '" . (int)$recurring_id . "', `option` = '" . $this->db->escape(json_encode($option)) . "', quantity = '" . (int)$quantity . "', date_added = NOW()");
+            ]]></add>
+        </operation>	
+		
+        <!-- If vendor-id is given, get subtotal for the specific vendor products,
+             else get subtotal of all products -->
+		<operation>
+            <search position="replace" offset="8"><![CDATA[
+            public function getSubTotal() {
+            ]]></search>
+            <add><![CDATA[
+            public function getSubTotal($vendor_id = null) {
+				$total = 0;
+
+				if ($vendor_id != null) {
+					foreach ($this->getProducts() as $product) {				
+						if ($vendor_id == $product['vendor_id']) {
+							$total += $product['total'];
+						}
+					}
+				} else {	
+					foreach ($this->getProducts() as $product) {
+						$total += $product['total'];
+					}
+				}
+
+				return $total;
+			}
+            ]]></add>
+        </operation>	
+	</file>
+	
+    <!-- Add access to vendor_id field when accessing the product -->
+	<!-- <file name="catalog/model/catalog/product.php">
+        <operation>
+            <search position="replace" offset="1"><![CDATA[
+			public function getProduct($product_id) {
+            ]]></search>
+            <add><![CDATA[
+            public function getProduct($product_id) {
+				$query = $this->db->query("SELECT DISTINCT *, pd.name AS name, p.image, p.vendor_id, m.name AS manufacturer, (SELECT price FROM " . DB_PREFIX . "product_discount pd2 WHERE pd2.product_id = p.product_id AND pd2.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND pd2.quantity = '1' AND ((pd2.date_start = '0000-00-00' OR pd2.date_start < NOW()) AND (pd2.date_end = '0000-00-00' OR pd2.date_end > NOW())) ORDER BY pd2.priority ASC, pd2.price ASC LIMIT 1) AS discount, (SELECT price FROM " . DB_PREFIX . "product_special ps WHERE ps.product_id = p.product_id AND ps.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "' AND ((ps.date_start = '0000-00-00' OR ps.date_start < NOW()) AND (ps.date_end = '0000-00-00' OR ps.date_end > NOW())) ORDER BY ps.priority ASC, ps.price ASC LIMIT 1) AS special, (SELECT points FROM " . DB_PREFIX . "product_reward pr WHERE pr.product_id = p.product_id AND pr.customer_group_id = '" . (int)$this->config->get('config_customer_group_id') . "') AS reward, (SELECT ss.name FROM " . DB_PREFIX . "stock_status ss WHERE ss.stock_status_id = p.stock_status_id AND ss.language_id = '" . (int)$this->config->get('config_language_id') . "') AS stock_status, (SELECT wcd.unit FROM " . DB_PREFIX . "weight_class_description wcd WHERE p.weight_class_id = wcd.weight_class_id AND wcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS weight_class, (SELECT lcd.unit FROM " . DB_PREFIX . "length_class_description lcd WHERE p.length_class_id = lcd.length_class_id AND lcd.language_id = '" . (int)$this->config->get('config_language_id') . "') AS length_class, (SELECT AVG(rating) AS total FROM " . DB_PREFIX . "review r1 WHERE r1.product_id = p.product_id AND r1.status = '1' GROUP BY r1.product_id) AS rating, (SELECT COUNT(*) AS total FROM " . DB_PREFIX . "review r2 WHERE r2.product_id = p.product_id AND r2.status = '1' GROUP BY r2.product_id) AS reviews, p.sort_order FROM " . DB_PREFIX . "product p LEFT JOIN " . DB_PREFIX . "product_description pd ON (p.product_id = pd.product_id) LEFT JOIN " . DB_PREFIX . "product_to_store p2s ON (p.product_id = p2s.product_id) LEFT JOIN " . DB_PREFIX . "manufacturer m ON (p.manufacturer_id = m.manufacturer_id) WHERE p.product_id = '" . (int)$product_id . "' AND pd.language_id = '" . (int)$this->config->get('config_language_id') . "' AND p.status = '1' AND p.date_available <= NOW() AND p2s.store_id = '" . (int)$this->config->get('config_store_id') . "'");
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="before"><![CDATA[
+            'manufacturer_id'  => $query->row['manufacturer_id'],
+            ]]></search>
+            <add><![CDATA[
+            'vendor_id'  		   => $query->row['vendor_id'],
+            ]]></add>
+        </operation>		
+    </file> -->
+	
+    <!-- If vendor_id is given get subtotal for only the vendor's products -->
+	<file name="catalog/model/extension/total/sub_total.php">	
+		<operation>
+            <search position="replace" offset="3"><![CDATA[
+            public function getTotal($total) {
+            ]]></search>
+            <add><![CDATA[
+            public function getTotal($total, $vendor_id = null) {
+				$this->load->language('extension/total/sub_total');
+
+				if ($vendor_id != null) {
+					$sub_total = $this->cart->getSubTotal($vendor_id);
+				} else {
+					$sub_total = $this->cart->getSubTotal();
+				}
+            ]]></add>
+        </operation>		
+    </file>
+
+    <!-- Add vendor_id when posting cart product to DB -->
+    <file name="catalog/controller/api/cart.php">
+        <operation>
+            <search position="before"><![CDATA[
+            if (isset($this->request->post['option'])) {
+            ]]></search>
+            <add><![CDATA[
+            $vendor_id = $product_info['vendor_id'];
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="replace"><![CDATA[
+            $this->cart->add($this->request->post['product_id'], $quantity, $option);
+            ]]></search>
+            <add><![CDATA[
+            $this->cart->add($this->request->post['product_id'], $vendor_id, $quantity, $option);
+            ]]></add>
+        </operation>
+    </file>
+	
+    <!-- Add vendor_id when posting cart product to DB -->
+	<file name="catalog/controller/checkout/cart.php">
+        <operation>
+            <search position="before"><![CDATA[
+            if (isset($this->request->post['option'])) {
+            ]]></search>
+            <add><![CDATA[
+            $vendor_id = $product_info['vendor_id'];
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="replace"><![CDATA[
+            $this->cart->add($this->request->post['product_id'], $quantity, $option, $recurring_id);
+            ]]></search>
+            <add><![CDATA[
+            $this->cart->add($this->request->post['product_id'], $vendor_id, $quantity, $option, $recurring_id);
+            ]]></add>
+        </operation>
+
+        <operation>
+			<search position="before"><![CDATA[
+			public function remove() {
+			]]></search>
+			<add><![CDATA[
+        	public function refresh() {
+        		$this->load->language('checkout/cart');
+        
+        		$json = array();
+               
+        		// Totals
+        		$this->load->model('setting/extension');
+        
+        		$totals = array();
+        		$taxes = $this->cart->getTaxes();
+        		$total = 0;
+        
+        		// Because __call can not keep var references so we put them into an array.
+        		$total_data = array(
+        			'totals' => &$totals,
+        			'taxes'  => &$taxes,
+        			'total'  => &$total
+        		);
+        			
+        		// Display prices
+        		if ($this->customer->isLogged() || !$this->config->get('config_customer_price')) {
+        			$sort_order = array();
+        
+        			$results = $this->model_setting_extension->getExtensions('total');
+        
+        			foreach ($results as $key => $value) {
+        				$sort_order[$key] = $this->config->get('total_' . $value['code'] . '_sort_order');
+        			}
+        
+        			array_multisort($sort_order, SORT_ASC, $results);
+        
+        			foreach ($results as $result) {
+        				if ($this->config->get('total_' . $result['code'] . '_status')) {
+        					$this->load->model('extension/total/' . $result['code']);
+        
+        					// We have to put the totals in an array so that they pass by reference.
+        					$this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
+        				}
+        			}
+        
+        			$sort_order = array();
+        
+        			foreach ($totals as $key => $value) {
+        				$sort_order[$key] = $value['sort_order'];
+        			}
+        
+        			array_multisort($sort_order, SORT_ASC, $totals);
+        		}
+    			
+                $json['total'] = sprintf($this->language->get('text_items'), $this->cart->countProducts() + (isset($this->session->data['vouchers']) ? count($this->session->data['vouchers']) : 0) + (isset($this->session->data['credits']) ? count($this->session->data['credits']) : 0), $this->currency->format($total, $this->session->data['currency']));
+                 
+        		$this->response->addHeader('Content-Type: application/json');
+        		$this->response->setOutput(json_encode($json));
+        	}
+			]]></add>
+		</operation>
+    </file>
+	
+    <!-- Map products to vendor_id and create a separate order for each vendor_id
+         Get total of each order, and total BASF Dollars entered and check if remaining 
+         balance is 0 -->
+	<!-- <file name="catalog/controller/checkout/confirm.php"> -->
+        <!-- Remove requirement for payment address to be entered by customer -->
+        <!-- <operation>
+            <search position="replace" offset="3"><![CDATA[
+            // Validate if payment address has been set.
+            ]]></search>
+            <add><![CDATA[
+            ]]></add>
+        </operation> -->
+
+        <!-- <operation>
+            <search position="replace" offset="1"><![CDATA[
+            if (!$redirect) {
+            ]]></search>
+            <add><![CDATA[
+            $vendor_map = array();
+			$data['vendors'] = array();
+            $order_data = array();
+			$grand_total = 0;
+            $basf_total = 0;
+			$remaining_total = 0;
+			
+			foreach ($products as $product) {
+				$vendor_map[$product['vendor_id']][] = $product;
+			}
+
+			foreach ($vendor_map as $vendor_id => $products) {
+                if (!$redirect) {
+            ]]></add>
+        </operation> -->
+		
+		<!-- <operation>
+            <search position="replace"><![CDATA[
+            $this->{'model_extension_total_' . $result['code']}->getTotal($total_data);
+            ]]></search>
+            <add><![CDATA[
+            $this->{'model_extension_total_' . $result['code']}->getTotal($total_data, $vendor_id);
+            ]]></add>
+        </operation> -->
+
+        <!-- <operation>
+            <search position="replace" offset="12"><![CDATA[
+            $order_data['payment_firstname'] = $this->session->data['payment_address']['firstname'];
+            ]]></search>
+            <add><![CDATA[
+            $order_data['payment_firstname'] = $customer_info['firstname'];
+            $order_data['payment_lastname'] = $customer_info['lastname'];
+            ]]></add>
+        </operation> -->
+		
+		<!-- <operation>
+            <search position="replace" index="1, 2"><![CDATA[
+			foreach ($this->cart->getProducts() as $product) {
+            ]]></search>
+            <add><![CDATA[
+            foreach ($products as $product) {
+            ]]></add>
+        </operation> -->
+		
+        <!-- <operation>
+            <search position="replace"><![CDATA[
+			$order_data['total'] = $total_data['total'];
+            ]]></search>
+            <add><![CDATA[
+            foreach ($order_data['totals'] as $total) {
+                if ($total['code'] == "sub_total") {
+                    $order_data['total'] = $total['value'];
+				    $grand_total += $total['value'];
+			    }  
+			}
+            ]]></add>
+        </operation> -->
+
+        <!-- <operation>
+            <search position="replace"><![CDATA[
+            $this->session->data['order_id'] = $this->model_checkout_order->addOrder($order_data);
+            ]]></search>
+            <add><![CDATA[
+            ]]></add>
+        </operation> -->
+
+		<!-- <operation>
+            <search position="after" offset="1"><![CDATA[
+			'href'       => $this->url->link('product/product', 'product_id=' . $product['product_id'])
+            ]]></search>
+            <add><![CDATA[
+            $data['vendors'][(int)$vendor_id]['products'] = $data['products'];
+            ]]></add>
+        </operation> -->
+		
+		<!-- <operation>
+            <search position="after" offset="1"><![CDATA[
+			'text'  => $this->currency->format($total['value'], $this->session->data['currency'])
+            ]]></search>
+            <add><![CDATA[
+
+			if ($total['code'] == "reward") {
+				$basf_total = $total['value'];
+			}
+					
+            $data['vendors'][(int)$vendor_id]['totals'] = $data['totals'];
+            ]]></add>
+        </operation> -->
+		
+		<!-- <operation>
+            <search position="replace" offset="3"><![CDATA[
+			$data['payment'] = $this->load->controller('extension/payment/' . $this->session->data['payment_method']['code']);
+            ]]></search>
+            <add><![CDATA[
+                    $this->session->data['order_data'][(int)$vendor_id] = $order_data;
+                } else {
+                    $data['redirect'] = $redirect;
+                }
+            }
+
+            $remaining_total = $grand_total + $basf_total;
+            
+            $data['basf_total'] = $this->currency->format(abs($basf_total), $this->session->data['currency']);
+            $data['grand_total'] = $this->currency->format($grand_total, $this->session->data['currency']);
+            $data['remaining_total'] = $this->currency->format($remaining_total, $this->session->data['currency']);
+            $data['remaining'] = $remaining_total;
+            $this->session->data['vendor_data'] = $data['vendors'];
+            
+            foreach ($this->session->data['order_data'] as $vendor_id => $order_data) {
+                $sub_total = 0;
+                if ($remaining_total == 0) {
+                    foreach ($order_data['totals'] as $total) {
+                        if ($total['code'] == "sub_total") {
+                            $sub_total = (int)$total['value'];
+                        } else if ($total['code'] == "reward") {
+                            unset($total['title']);
+                            $total['value'] = -$sub_total;
+                            print_r($total['value']);
+                            echo '<br/>';
+                        }
+                    }
+                }
+                print_r($vendor_id);
+                echo '<br/>';
+                print_r($order_data);
+                echo '<br/>';
+            }
+
+            if ($remaining_total != 0) {
+                $data['error_warning'] = "BASF Dollars not enough to make this purchase. Add BASF Dollars or remove products.";
+            } else {
+                $data['continue'] = $this->url->link('checkout/success');
+            }
+
+            ]]></add>
+        </operation> -->
+
+        <!-- <operation>
+            <search position="after" offset="1"><![CDATA[
+            $this->response->setOutput($this->load->view('checkout/confirm', $data));
+            ]]></search>
+            <add><![CDATA[
+            public function confirm() {
+                foreach ($this->session->data['vendor_data'] as $vendor_id => $order_data) {
+                    $this->load->model('checkout/order');    
+                    $order_id = (int)$order_data['order_id'];
+                    $this->model_checkout_order->addOrderHistory($order_id, 1);
+                }
+            }
+            ]]></add>
+        </operation> -->
+    <!-- </file> -->
+	
+    <!-- Add template access to vendor_id -->
+	<file name="catalog/controller/product/product.php">
+        <operation>
+            <search position="after"><![CDATA[
+            $data['manufacturers'] = $this->url->link('product/manufacturer/info', 'manufacturer_id=' . $product_info['manufacturer_id']);
+            ]]></search>
+            <add><![CDATA[
+            $data['vendor_id'] = $product_info['vendor_id'];
+            ]]></add>
+        </operation>
+    </file>
+   
+   <!-- Format confirm tab to separate order by vendors 
+        and display grand total, BASF dollars used and 
+        remaining balance -->
+   <file name="catalog/view/theme/*/template/checkout/confirm.twig">
+        <operation>
+            <search position="after"><![CDATA[
+			<div class="table-responsive">
+            ]]></search>
+            <add><![CDATA[
+            {% if error_warning %}
+				<div class="alert alert-danger alert-dismissible"><i class="fa fa-exclamation-circle"></i> {{ error_warning }}
+					<button type="button" class="close" data-dismiss="alert">&times;</button>
+				</div>
+			{% endif %}
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="after"><![CDATA[
+            </thead>
+            ]]></search>
+            <add><![CDATA[
+            {% for vendor in vendors %}
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="replace"><![CDATA[
+            {% for product in products %}
+            ]]></search>
+            <add><![CDATA[
+            {% for product in vendor.products %}
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="before"><![CDATA[
+            </tbody>
+            ]]></search>
+            <add><![CDATA[
+            {% for total in vendor.totals %}
+				{% if total.title == 'Sub-Total' %}
+				  <tr>
+					<td colspan="4" class="text-right"><strong>{{ total.title }}:</strong></td>
+					<td class="text-right">{{ total.text }}</td>
+				  </tr>
+				{% endif %}
+			{% endfor %}
+            ]]></add>
+        </operation>
+		
+		<operation>
+            <search position="replace" offset="8"><![CDATA[
+            <tfoot>
+            ]]></search>
+            <add><![CDATA[
+            {% endfor %}
+			 </table>
+			
+			<table class="table">
+				<tr>
+				  <td class="text-left"><strong>{{ grand_total_text }}:</strong></td>
+				  <td class="text-right">{{ grand_total }}</td>
+				</tr>
+				<tr>
+				  <td class="text-left"><strong>{{ basf_total_text }}:</strong></td>
+				  <td class="text-right">-{{ basf_total }}</td>
+				</tr>
+				<tr>
+				  <td class="text-left"><strong>{{ remaining_total_text }}:</strong></td>
+				  <td class="text-right">{{ remaining_total }}</td>
+				</tr>
+            ]]></add>
+        </operation>
+        <operation>
+            <search position="replace"><![CDATA[
+            {{ payment }}
+            ]]></search>
+            <add><![CDATA[
+            {% if remaining == 0 %}
+                <div class="buttons">
+                    <div class="pull-right">
+                        <input type="button" value="{{ button_confirm }}" id="button-confirm" class="btn btn-primary" data-loading-text="{{ text_loading }}" />
+                    </div>
+                </div>
+            {% endif %}
+            <script type="text/javascript"><!--
+            $('#button-confirm').on('click', function() {
+                $.ajax({
+                    type: 'get',
+                    url: 'index.php?route=checkout/confirm/confirm',
+                    cache: false,
+                    beforeSend: function() {
+                        $('#button-confirm').button('loading');
+                    },
+                    complete: function() {
+                        $('#button-confirm').button('reset');
+                    },
+                    success: function() {
+                        location = '{{ continue }}';
+                    }
+                });
+            });
+            //--></script>
+            ]]></add>
+        </operation>
+        
+    </file>
+</modification>

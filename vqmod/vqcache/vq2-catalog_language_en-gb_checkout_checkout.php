@@ -9,8 +9,31 @@ $_['text_checkout_account']          = 'Step %s: Account &amp; Billing Details';
 $_['text_checkout_payment_address']  = 'Step %s: Billing Details';
 
             $_['text_checkout_shipping_address'] = 'Step %s: Customer Details';
+            $_['text_checkout_shipping_method']  = 'Step %s: Delivery Message';
+
+            // Checkout language for grand total, BASF dollars and remaining balance
+            $_['grand_total_text']             = 'Total Due';
+			$_['basf_total_text']              = 'BASF Dollars Used';
+			$_['remaining_total_text']         = 'Remaining Balance';
+
+            // Apply BASF $ during checkout
+            $_['entry_coupon']              = 'Enter your coupon here';
+            $_['use_coupon']                = 'Use Coupon Code';
+            $_['text_success']              = 'Success:Your discount coupon has been successfuly applied to your order!. You will see it in the next checkout step';
+            $_['button_coupon']             = 'Apply Coupon';
+            $_['error_empty_coupon']        = 'Warning: Please enter the code of discount coupon to use!';
             
-$_['text_checkout_shipping_method']  = 'Step %s: Delivery Method';
+            $_['entry_voucher']             = 'Enter your gift certificate here';
+            $_['use_voucher']               = 'Use Gift Certificate Code';
+            $_['text_success']              = 'Success:Your discount gift certificate has been successfuly applied to your order!. You will see it in the next checkout step';
+            $_['button_voucher']            = 'Apply Gift Certificate';
+            $_['error_empty_voucher']       = 'Warning: Please enter the code of gift certificate to use!';
+    
+            $_['entry_reward']              = 'Enter your BASF Dollars here';
+            $_['use_reward']                = 'Use BASF Dollars (Available %s | Max %s)';
+            $_['button_reward']             = 'Apply BASF $';
+            
+
 $_['text_checkout_payment_method']   = 'Step %s: Payment Method';
 $_['text_checkout_confirm']          = 'Step %s: Confirm Order';
 $_['text_modify']                    = 'Modify &raquo;';
@@ -30,7 +53,9 @@ $_['text_address_new']               = 'I want to use a new address';
 $_['text_address_existing']          = 'I want to use an existing address';
 $_['text_shipping_method']           = 'Please select the preferred shipping method to use on this order.';
 $_['text_payment_method']            = 'Please select the preferred payment method to use on this order.';
-$_['text_comments']                  = 'Add Comments About Your Order';
+
+            $_['text_comments']                  = 'Add Custom Message';
+            
 $_['text_recurring_item']            = 'Recurring Item';
 $_['text_payment_recurring']         = 'Payment Profile';
 $_['text_trial_description']         = '%s every %d %s(s) for %d payment(s) then';

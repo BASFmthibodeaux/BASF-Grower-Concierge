@@ -4,7 +4,7 @@ $_['heading_title']       = 'My Account';
 
             // BASF Account
 			$_['text_basf_greeting']  = 'Hello, <strong>%s</strong>.';
-			$_['text_basf_credits']   = 'You have <strong>%d</strong> BASF remaining.';
+			$_['text_basf_credits']   = 'You have <strong>%d</strong> BASF Dollars remaining.';
 			$_['text_basf_home']	  = 'View Home Page';
             
 

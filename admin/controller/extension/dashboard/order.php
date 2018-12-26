@@ -91,9 +91,19 @@ class ControllerExtensionDashboardOrder extends Controller {
 		// Total Orders
 		$this->load->model('sale/order');
 
-		$today = $this->model_sale_order->getTotalOrders(array('filter_date_added' => date('Y-m-d', strtotime('-1 day'))));
+		// Avash
+		$this->load->model('user/user');
+		$user_info = $this->model_user_user->getUser($this->user->getId());
+		$data['user_group_id'] = $user_info['user_group_id'];
+			
+		$filter_vendor_id = 0;
+		if ((int)$user_info['user_group_id'] == 10) {
+			$filter_vendor_id = $user_info['user_id'];
+		}	
 
-		$yesterday = $this->model_sale_order->getTotalOrders(array('filter_date_added' => date('Y-m-d', strtotime('-2 day'))));
+		$today = $this->model_sale_order->getTotalOrders(array('filter_date_added' => date('Y-m-d', strtotime('-1 day')), 'vendor_id' => $filter_vendor_id));
+
+		$yesterday = $this->model_sale_order->getTotalOrders(array('filter_date_added' => date('Y-m-d', strtotime('-2 day')), 'vendor_id' => $filter_vendor_id));
 
 		$difference = $today - $yesterday;
 
@@ -103,7 +113,7 @@ class ControllerExtensionDashboardOrder extends Controller {
 			$data['percentage'] = 0;
 		}
 
-		$order_total = $this->model_sale_order->getTotalOrders();
+		$order_total = $this->model_sale_order->getTotalOrders(array('vendor_id' => $filter_vendor_id));
 
 		if ($order_total > 1000000000000) {
 			$data['total'] = round($order_total / 1000000000000, 1) . 'T';

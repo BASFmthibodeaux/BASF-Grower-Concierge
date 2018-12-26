@@ -91,9 +91,20 @@ class ControllerExtensionDashboardRecent extends Controller {
 		// Last 5 Orders
 		$data['orders'] = array();
 
+		// Avash
+		$this->load->model('user/user');
+		$user_info = $this->model_user_user->getUser($this->user->getId());
+		$data['user_group_id'] = $user_info['user_group_id'];
+			
+		$filter_vendor_id = 0;
+		if ((int)$user_info['user_group_id'] == 10) {
+			$filter_vendor_id = $user_info['user_id'];
+		}		
+
 		$filter_data = array(
 			'sort'  => 'o.date_added',
 			'order' => 'DESC',
+			'vendor_id' => $filter_vendor_id,
 			'start' => 0,
 			'limit' => 5
 		);

@@ -113,11 +113,21 @@ class ControllerExtensionDashboardChart extends Controller {
 			$range = 'day';
 		}
 
+		// Avash
+		$this->load->model('user/user');
+		$user_info = $this->model_user_user->getUser($this->user->getId());
+		$data['user_group_id'] = $user_info['user_group_id'];
+			
+		$filter_vendor_id = 0;
+		if ((int)$user_info['user_group_id'] == 10) {
+			$filter_vendor_id = $user_info['user_id'];
+		}	
+
 		switch ($range) {
 			default:
 			case 'day':
-				$results = $this->model_extension_dashboard_chart->getTotalOrdersByDay();
-
+				$results = $this->model_extension_dashboard_chart->getTotalOrdersByDay($filter_vendor_id);
+				
 				foreach ($results as $key => $value) {
 					$json['order']['data'][] = array($key, $value['total']);
 				}
@@ -133,7 +143,7 @@ class ControllerExtensionDashboardChart extends Controller {
 				}
 				break;
 			case 'week':
-				$results = $this->model_extension_dashboard_chart->getTotalOrdersByWeek();
+				$results = $this->model_extension_dashboard_chart->getTotalOrdersByWeek($filter_vendor_id);
 
 				foreach ($results as $key => $value) {
 					$json['order']['data'][] = array($key, $value['total']);
@@ -154,7 +164,7 @@ class ControllerExtensionDashboardChart extends Controller {
 				}
 				break;
 			case 'month':
-				$results = $this->model_extension_dashboard_chart->getTotalOrdersByMonth();
+				$results = $this->model_extension_dashboard_chart->getTotalOrdersByMonth($filter_vendor_id);
 
 				foreach ($results as $key => $value) {
 					$json['order']['data'][] = array($key, $value['total']);
@@ -173,7 +183,7 @@ class ControllerExtensionDashboardChart extends Controller {
 				}
 				break;
 			case 'year':
-				$results = $this->model_extension_dashboard_chart->getTotalOrdersByYear();
+				$results = $this->model_extension_dashboard_chart->getTotalOrdersByYear($filter_vendor_id);
 
 				foreach ($results as $key => $value) {
 					$json['order']['data'][] = array($key, $value['total']);
