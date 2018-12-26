@@ -52,6 +52,7 @@ $_['entry_price']            = 'Price';
 $_['entry_tax_class']        = 'Tax Class';
 
             $_['entry_points']           = 'BASF Dollars';
+            $_['entry_option_points']    = 'BASF Dollars';
             
 
 $_['entry_subtract']         = 'Subtract Stock';

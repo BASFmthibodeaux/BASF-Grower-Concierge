@@ -436,6 +436,7 @@ class ControllerCheckoutConfirm extends Controller {
 			}
 		}
 		
+		print_r($this->session->data['order_data']);
 		$remaining_total = $grand_total + $basf_total;
             
 		$data['basf_total'] = $this->currency->format(abs($basf_total), $this->session->data['currency']);
@@ -458,5 +459,8 @@ class ControllerCheckoutConfirm extends Controller {
 			$order_id = $this->model_checkout_order->addOrder($order_data, $vendor_id);
 			$this->model_checkout_order->addOrderHistory($order_id, 1);
 		}
+		unset($this->session->data['order_data']);
+		unset($this->session->data['reward']);
+		$this->cart->clear();
 	}
 }

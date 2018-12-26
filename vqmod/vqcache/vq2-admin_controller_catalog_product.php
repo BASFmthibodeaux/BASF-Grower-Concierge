@@ -246,16 +246,17 @@ class ControllerCatalogProduct extends Controller {
             
             if ((int)$user_info['user_group_id'] == 10) {
                 $filter_vendor_id = $user_info['user_id'];
-                $data['vendor_user'] = true;
-            }
+            } else if ((int)$user_info['user_group_id'] == 1) {
+                $data['admin_user'] = true;
 
-            if ($filter_vendor_id == null) {
-                if (isset($this->request->get['filter_vendor_id'])) {
-                    $filter_vendor_id = $this->request->get['filter_vendor_id'];
-                } else{
-                    $filter_vendor_id = '';
+                if ($filter_vendor_id == null) {
+                    if (isset($this->request->get['filter_vendor_id'])) {
+                        $filter_vendor_id = $this->request->get['filter_vendor_id'];
+                    } else{
+                        $filter_vendor_id = '';
+                    }
                 }
-		    }
+            }
 	        
 		if (isset($this->request->get['filter_name'])) {
 			$filter_name = $this->request->get['filter_name'];
@@ -324,7 +325,6 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 
-            // Avash
             if ($filter_vendor_id == null && isset($this->request->get['filter_vendor_id'])) {
                 $url .= '&filter_vendor_id=' . $this->request->get['filter_vendor_id'];
             }
@@ -456,7 +456,6 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 
-            // Avash
             if ($filter_vendor_id == null && isset($this->request->get['filter_vendor_id'])) {
                 $url .= '&filter_vendor_id=' . $this->request->get['filter_vendor_id'];
             }
@@ -504,7 +503,6 @@ class ControllerCatalogProduct extends Controller {
 		}
 
 
-            // Avash
             if ($filter_vendor_id == null && isset($this->request->get['filter_vendor_id'])) {
                 $url .= '&filter_vendor_id=' . $this->request->get['filter_vendor_id'];
             }
